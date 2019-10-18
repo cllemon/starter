@@ -1,0 +1,24 @@
+{
+  "name": "starter",
+  "version": "1.0.0",
+  "description": "List of engineering builds for web applications",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cllemon/starter.git"
+  },
+  "keywords": [
+    "javascript",
+    "typescript",
+    "react"
+  ],
+  "author": "cllemon",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cllemon/starter/issues"
+  },
+  "homepage": "https://github.com/cllemon/starter#readme"
+}
