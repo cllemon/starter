@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack"
+    "server": "cross-env NODE_ENV=development webpack-dev-server --color --progress",
+    "build": "cross-env NODE_ENV=production webpack --color --progress"
   },
   "repository": {
     "type": "git",
@@ -28,10 +29,14 @@
     "@babel/preset-env": "^7.6.3",
     "@babel/preset-react": "^7.6.3",
     "babel-loader": "^8.0.6",
+    "cross-env": "^6.0.3",
+    "react-hot-loader": "^4.12.15",
     "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.9"
+    "webpack-cli": "^3.3.9",
+    "webpack-dev-server": "^3.8.2"
   },
   "dependencies": {
+    "@hot-loader/react-dom": "^16.10.2",
     "react": "^16.10.2",
     "react-dom": "^16.10.2"
   }
