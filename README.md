@@ -33,6 +33,8 @@ $ 如何使用 ？
 # https://git-scm.com/doc || git --help
 ```
 
+**[⬆ back to top](#)**
+
 ### 2. [Create a local](https://help.github.com/en/articles/ignoring-files) `.gitignore`
 
 > 有时，有些文件不希望 `Git` 签入 `GitHub`。`.gitignore` 配置文件可以告诉 `Git` 忽略哪些文件。
@@ -60,6 +62,8 @@ yarn-error.log*
 # Editor directories and files
 .vscode
 ```
+
+**[⬆ back to top](#)**
 
 ### 3. [node](http://nodejs.cn/)、[npm]([node.js](http://nodejs.cn/)) 和 [yarn](https://yarn.bootcss.com/)
 
@@ -109,6 +113,8 @@ $ 初始化项目
 # mkdir starter && npm init
 ```
 
+**[⬆ back to top](#)**
+
 #### `初始工程目录` 与 `package.json` 的信息 ✅
 
 > 工程目录
@@ -150,6 +156,8 @@ $ 初始化项目
 
 > 注意：以下描述中所有的包安装都采用 `yarn` 命令
 
+**[⬆ back to top](#)**
+
 ### 4. [editorconfig]( http://editorconfig.org)
 
 > `EditorConfig` 可以帮助开发者在不同的编辑器和 `IDE` 之间定义和维护一致的代码风格。
@@ -175,6 +183,8 @@ trim_trailing_whitespace = true   # 设为 true 表示会除去换行行首的�
 insert_final_newline = false
 trim_trailing_whitespace = false
 ```
+
+**[⬆ back to top](#)**
 
 ### 5. [browserslist](https://github.com/browserslist/browserslist)
 
@@ -223,6 +233,8 @@ trim_trailing_whitespace = false
     last 1 safari version
   ```
 
+**[⬆ back to top](#)**
+
 ### 6. [引入 webpack](https://webpack.docschina.org/guides/)
 
 > 本质上，`webpack` 是一个现代 `JavaScript` 应用程序的静态模块打包工具。当 `webpack` 处理应用程序时，它会在内部构建一个 依赖图(`dependency graph`)，此依赖图会映射项目所需的每个模块，并生成一个或多个 `bundle`。
@@ -250,6 +262,8 @@ trim_trailing_whitespace = false
       ├── package.json
       └── README.md
     ```
+
+**[⬆ back to top](#)**
 
 ### 7. [引入 React](https://github.com/facebook/react/)
 
@@ -303,8 +317,9 @@ trim_trailing_whitespace = false
   ReactDom.render(<App />, document.getElementById('root'));
   ```
 
-
 > 注意：由于浏览器不支持最新的 JavaScript 语法和 react jsx 的语法解析，所以我们需要一个编译器帮助我们。
+
+**[⬆ back to top](#)**
 
 ### 8. [引入 Babel](https://babel.docschina.org/)
 
@@ -368,10 +383,9 @@ trim_trailing_whitespace = false
     {
       "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-  +     "build": "webpack"
+  +     "build": "webpack --color --progress"
       }
     }
-
   ```
 
 - **修改 index.html 引入打包之后的 bundle.js 文件**
@@ -405,14 +419,457 @@ trim_trailing_whitespace = false
 
   ![x](https://user-gold-cdn.xitu.io/2019/10/19/16de2286c4507cc9?w=1186&h=410&f=png&s=17778)
 
+- **工程目录**
+
+  ```diff
+  └── starter
+  + ├── dist
+  + │   └── bundle.js
+    ├── node_modules
+  + ├── public
+  + │   ├── favicon.ico
+  + │   └── index.html
+    ├── src
+    │   └── index.js
+    ├── webpack.config.js
+    ├── package.json
+    ├── README.md
+  + └── yarn.lock
+    ```
+
+**[⬆ back to top](#)**
+
 ### 9. [搭建开发环境 - 借助 webpack-dev-server](https://webpack.docschina.org/configuration/dev-server/)
 
-- **安装与配置**
+> webpack-dev-server 为你提供了一个简单的 web server，并且具有 live reloading(实时重新加载) 功能。
+
+- **安装**
 
   ```sh
   $ yarn add -D webpack-dev-server # 用于快速开发应用程序
-
   ```
+
+- **添加相应配置**
+
+  ```diff
+  // starter/webpack.config.js
+
+  const path = require('path');
+
+  module.exports = function() {
+    const baseConfig = {
+      entry: './src/index.js',
+
+      output: {
+        path: path.resolve(__dirname, 'dist'),
+        filename: 'bundle.js'
+      },
+
+      module: {
+        rules: [
+          {
+            test: /\.(js|jsx)$/,
+            exclude: /node_modules/,
+            loader: 'babel-loader'
+          },
+        ]
+      },
+
+  +   devServer: {
+  +     contentBase: path.resolve(__dirname, 'public'), // 告诉服务器从哪个目录中提供内容
+  +     historyApiFallback: true,                       // 启用当使用 HTML5 History API 时，任意的 404 响应都可能需要被替代为 index.html。
+  +     compress: true,                                 // 一切服务都启用 gzip 压缩
+  +     open: true,                                     // 告诉 dev-server 在 server 启动后打开浏览器
+  +     port: 3000,                                     // 指定要监听请求的端口号
+  +     stats: 'errors-only',                           // 精确控制要显示的 bundle 信息 (在 bundle 中只显示错误)
+  +   }
+    };
+
+    return baseConfig;
+  };
+  ```
+
+- **修改 package.json 添加 webpack 命令, 快捷运行**
+
+  ```diff
+    {
+      "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "webpack --color --progress",
+  +     "server": "webpack-dev-server --color --progress"
+      }
+    }
+  ```
+
+  > `--color`: 启用/禁用控制台的彩色输出; `--progress`: 将运行进度输出到控制台。
+
+- **修改 index.html 主文件 bundle.js 路径**
+
+  ```diff
+    ...
+    <div id="root"></div>
+  - <script src="../dist/bundle.js"></script>
+  + <script src="bundle.js"></script>
+    ...
+  ```
+
+- **运行项目**
+
+  ```sh
+  $ yarn server
+
+  # 结果：
+
+  $ webpack-dev-server --color --progress
+
+  10% building 1/1 modules 0 activeℹ ｢wds｣: Project is running at http://localhost:3000/
+  ℹ ｢wds｣: webpack output is served from /
+  ℹ ｢wds｣: Content not from webpack is served from /Users/mr.lemon/cl/CODE_CL/REACT/starter/public
+  ℹ ｢wds｣: 404s will fallback to /index.html
+  ℹ ｢wdm｣: Compiled successfully.
+  ```
+
+  > 打开 `http://localhost:3000/` 将显示 `Hello, world!`; 修改 `src/index.js` 将会刷新浏览器实时更新修改。Try it!
+
+- **存在问题或待改进提升点**
+
+  1. **每次更改都需刷新整个浏览器，这显然是不符合现代工程开发体验！**
+  2. **未区分环境（ `webpack.config.js` 有些配置我们只希望在开发环境有，而在生产环境应有其特定配置）**
+
+  <br />
+
+  > 带着这些问题，继续吧！👍
+
+**[⬆ back to top](#)**
+
+### 10. [搭建开发环境 - 环境变量](https://webpack.docschina.org/guides/environment-variables/)
+
+- **安装**
+
+  ```sh
+  $ yarn add -D cross-env # Cross platform setting of environment scripts
+  ```
+
+- **修改 package.json webpack 命令**
+
+    ```diff
+    {
+      "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+  -     "build": "webpack --color --progress",
+  +     "build": "cross-env NODE_ENV=production webpack --color --progress",
+  -     "server": "webpack-dev-server --color --progress"
+  +     "server": "cross-env NODE_ENV=development webpack-dev-server --color --progress"
+      }
+    }
+  ```
+
+- **为 webpack.config.js 添加相应配置**
+
+  ```diff
+    // starter/webpack.config.js
+
+    const path = require('path');
+  + const IS_PROD = process.env.NODE_ENV === 'production';
+
+    module.exports = function() {
+      const baseConfig = {
+  +     mode: IS_PROD ? 'production' : 'development',
+
+        entry: './src/index.js',
+
+        output: {
+          path: path.resolve(__dirname, 'dist'),
+          filename: 'bundle.js'
+        },
+
+        module: {
+          rules: [
+            {
+              test: /\.(js|jsx)$/,
+              exclude: /node_modules/,
+              loader: 'babel-loader'
+            },
+          ]
+        },
+
+  -     devServer: {
+  -       contentBase: path.resolve(__dirname, 'public'), // 告诉服务器从哪个目录中提供内容
+  -       historyApiFallback: true,                       // 启用当使用 HTML5 History API 时，任意的 404 响应都可能需要被替代为 index.html。
+  -       compress: true,                                 // 一切服务都启用 gzip 压缩
+  -       open: true,                                     // 告诉 dev-server 在 server 启动后打开浏览器
+  -       port: 3000,                                     // 指定要监听请求的端口号
+  -       stats: 'errors-only',                           // 精确控制要显示的 bundle 信息 (在 bundle 中只显示错误)
+  -     }
+      };
+
+  +   if (!IS_PROD) {
+  +     baseConfig.devServer = {
+  +       contentBase: path.resolve(__dirname, 'public'), // 告诉服务器从哪个目录中提供内容
+  +       historyApiFallback: true,                       // 启用当使用 HTML5 History API 时，任意的 404 响应都可能需要被替代为 index.html。
+  +       compress: true,                                 // 一切服务都启用 gzip 压缩
+  +       open: true,                                     // 告诉 dev-server 在 server 启动后打开浏览器
+  +       port: 3000,                                     // 指定要监听请求的端口号
+  +       stats: 'errors-only',                           // 精确控制要显示的 bundle 信息 (在 bundle 中只显示错误)
+  +     };
+  +   }
+
+      return baseConfig;
+    };
+  ```
+
+**[⬆ back to top](#)**
+
+### 11. [搭建开发环境 - 热替换模块(Hot Module Replacement)](https://webpack.docschina.org/plugins/hot-module-replacement-plugin/)
+
+> 模块热替换(hot module replacement 或 HMR)是 webpack 提供的最有用的功能之一。它允许在运行时更新所有类型的模块，而无需完全刷新。
+
+- **为 webpack.config.js 添加相应配置**
+
+  ```diff
+    // starter/webpack.config.js
+
+    const path = require('path');
+  + const webpack = require('webpack');
+    const IS_PROD = process.env.NODE_ENV === 'production';
+
+    module.exports = function() {
+      const baseConfig = {
+        mode: IS_PROD ? 'production' : 'development',
+
+        entry: './src/index.js',
+
+        output: {
+          path: path.resolve(__dirname, 'dist'),
+          filename: 'bundle.js'
+        },
+
+        module: {
+          rules: [
+            {
+              test: /\.(js|jsx)$/,
+              exclude: /node_modules/,
+              loader: 'babel-loader'
+            },
+          ]
+        },
+
+  +     plugins: []
+      };
+
+      if (!IS_PROD) {
+        baseConfig.devServer = {
+          contentBase: path.resolve(__dirname, 'public'), // 告诉服务器从哪个目录中提供内容
+          historyApiFallback: true,                       // 启用当使用 HTML5 History API 时，任意的 404 响应都可能需要被替代为 index.html。
+          compress: true,                                 // 一切服务都启用 gzip 压缩
+          open: true,                                     // 告诉 dev-server 在 server 启动后打开浏览器
+          port: 3000,                                     // 指定要监听请求的端口号
+          stats: 'errors-only',                           // 精确控制要显示的 bundle 信息 (在 bundle 中只显示错误)
+  +       hot: true                                       // 启用 webpack 的 模块热替换 功能
+        };
+  +     baseConfig.plugins.concat([
+  +       new webpack.HotModuleReplacementPlugin()        // 热替换模块插件
+  +     ]);
+      }
+
+      return baseConfig;
+    };
+  ```
+
+- **修改 src/index.js 文件**
+
+  ```diff
+  - import React from 'react';
+  + import React, { useState } from 'react';
+    import ReactDom from 'react-dom';
+
+
+  - const App = () => <h1>Hello, world!</h1>;
+
+  + const App = () => {
+  +   const [title, setTitle] = useState('hello, world!');
+  +   const reversedTitle = () =>
+  +     setTitle(
+  +       title
+  +         .split('')
+  +         .reverse()
+  +         .join('')
+  +     );
+  +   return (
+  +     <div>
+  +       <h1>{ title }</h1>
+  +       <button type='button' onClick={reversedTitle}>
+  +         reversed title
+  +       </button>
+  +     </div>
+  +   );
+  + };
+
+  + if (module.hot) {
+  +   module.hot.accept();
+  + }
+
+    ReactDom.render(<App />, document.getElementById('root'));
+  ```
+
+- **运行项目**
+
+  ```sh
+  $ yarn server
+
+  # 结果：
+
+  $ cross-env NODE_ENV=development webpack-dev-server --color --progress
+  10% building 1/1 modules 0 activeℹ ｢wds｣: Project is running at http://localhost:3000/
+  ℹ ｢wds｣: webpack output is served from /
+  ℹ ｢wds｣: Content not from webpack is served from /Users/mr.lemon/cl/CODE_CL/REACT/starter/public
+  ℹ ｢wds｣: 404s will fallback to /index.html
+  ℹ ｢wdm｣: Compiled successfully.
+
+  # 浏览器 console
+  [HMR] Waiting for update signal from WDS...      log.js:24
+  [WDS] Hot Module Replacement enabled.            client:48
+  [WDS] Live Reloading enabled.                    client:52
+  ```
+
+  > 打开 `http://localhost:3000/` 修改 `src/index.js` 实现了未刷新浏览器更新修改。Try it!
+
+  ![x](https://user-gold-cdn.xitu.io/2019/10/19/16de3442b9d5bd28?w=1596&h=618&f=png&s=44023)
+
+- **存在问题或待改进提升点**
+
+  1. **每次修改内容时，做到了无刷新更新，但同时也清空了组件内部状态值；这显示也是不能接受的。**
+
+  <br />
+
+  > 带着这个问题，继续吧！✈️
+
+**[⬆ back to top](#)**
+
+### 12. [搭建开发环境 - 热替换模块 - 引入 react-hot-loader](https://github.com/gaearon/react-hot-loader)
+
+> 实时调整React组件。
+
+- **说明**
+
+  1. 由于该项目选择的是 react 框架，故引入 react-hot-loader。
+  2. 如果换成别的框架也有对应的插件集成，比如：vue 在 vue-loader 集成的 vue-hot-reload-api。
+  3. 当然，这些你也可以自己去实现。
+
+- **安装**
+
+  ```sh
+  $ yarn add -D react-hot-loader
+  $ yarn add @hot-loader/react-dom # 替换了相同版本的 react-dom 软件包，但附加了一些补丁以支持热重装。
+  ```
+
+- **将 `"react-hot-loader/babel"` 添加到您的 `.babelrc` 中**
+
+  ```diff
+    {
+      "presets": ["@babel/preset-env", "@babel/preset-react"],
+  -   "plugins": ["@babel/plugin-transform-runtime"]
+  +   "plugins": ["@babel/plugin-transform-runtime", "react-hot-loader/babel"]
+    }
+  ```
+
+- **重置 `react-dom` 兼容 `hooks`**
+
+  ```diff
+    ...
+
+    moduele.exports = function () {
+
+      ...
+
+  +   resolve: {
+  +     alias: {
+  +       'react-dom': '@hot-loader/react-dom' // react-hot-loader 兼容 hook 写法
+  +     }
+  +   },
+
+      ...
+
+    }
+
+    ...
+  ```
+
+- **修改 src/index.js 主文件，将根组件标记为 `hot-exported`**
+
+  ```diff
+  + import { hot } from 'react-hot-loader';
+    import React, { useState } from 'react';
+    import ReactDom from 'react-dom';
+
+  - const App = () => {
+  + const App = hot(module)(() => {
+      const [title, setTitle] = useState('hello, world!');
+
+      const reversedTitle = () =>
+        setTitle(
+          title
+            .split('')
+            .reverse()
+            .join('')
+        );
+      return (
+        <div>
+          <h1>{title}</h1>
+          <button type='button' onClick={reversedTitle}>
+            reversed title!
+          </button>
+        </div>
+      );
+  - };
+  + });
+
+  - if (module.hot) {
+  -   module.hot.accept();
+  - }
+
+    ReactDom.render(<App />, document.getElementById('root'));
+  ```
+
+- **运行项目**
+
+  ```sh
+  $ yarn server
+
+  # 结果：
+
+  $ cross-env NODE_ENV=development webpack-dev-server --color --progress
+  10% building 1/1 modules 0 activeℹ ｢wds｣: Project is running at http://localhost:3000/
+  ℹ ｢wds｣: webpack output is served from /
+  ℹ ｢wds｣: Content not from webpack is served from /Users/mr.lemon/cl/CODE_CL/REACT/starter/public
+  ℹ ｢wds｣: 404s will fallback to /index.html
+  ℹ ｢wdm｣: Compiled successfully.
+  ℹ ｢wdm｣: Compiling...
+  ℹ ｢wdm｣: Compiled successfully.
+
+  # 浏览器 console
+  [HMR] Waiting for update signal from WDS...      log.js:24
+  [WDS] App hot update...                          reloadApp.js:19
+  [HMR] Checking for updates on the server...      log.js:24
+  [HMR] Updated modules:                           log.js:24
+  [HMR]  - ./src/index.js                          log.js:24
+  [HMR] App is up to date.                         log.js:24
+  ```
+
+  > 打开 `http://localhost:3000/`, 点击 `reversed title` 然后修改 `src/index.js` 实现了未刷新浏览器保留组件状态的更新修改。Try it!
+
+  ![x](https://user-gold-cdn.xitu.io/2019/10/19/16de36c40161464e?w=1792&h=646&f=png&s=47460)
+
+- **阶段结语**
+
+  1. 至此一个简易的开发环境，就这样被搭建出来了。🐃
+  2. 后面的工作还很多，继续吧！🍺
+
+**[⬆ back to top](#)**
+
+### 13. 完善应用
+
+> 待续...
 
 ## 参阅
 
@@ -432,3 +889,16 @@ trim_trailing_whitespace = false
 - [@babel/plugin-transform-runtime](https://babeljs.io/docs/en/babel-plugin-transform-runtime#docsNav)
 - [babel-loader](https://github.com/babel/babel-loader)
 - [webpack-dev-server](https://webpack.docschina.org/configuration/dev-server/)
+- [cross-env](https://github.com/kentcdodds/cross-env)
+- [webpack mode](https://webpack.docschina.org/guides/production/#%E6%8C%87%E5%AE%9A-mode)
+- [HotModuleReplacementPlugin](https://webpack.docschina.org/plugins/hot-module-replacement-plugin/)
+- [react-hot-loader](https://github.com/gaearon/react-hot-loader)
+- [@hot-loader/react-dom](https://github.com/gaearon/react-hot-loader#hot-loaderreact-dom)
+- []()
+- []()
+- []()
+- []()
+- []()
+- []()
+- []()
+- []()
