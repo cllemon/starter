@@ -331,7 +331,6 @@ trim_trailing_whitespace = false
   $ yarn add -D @babel/core                      # Babel 编译器核心模块
   $ yarn add -D @babel/preset-env                # 是一个智能预设，它使您可以使用最新的JavaScript，而无需微观管理目标环境所需的语法转换
   $ yarn add -D @babel/preset-react              # react 智能预设, 包含了解析 jsx 等插件
-  $ yarn add -D @babel/plugin-transform-runtime  # babel 在转译高版本代码时，会需要许多辅助函数，这个包就是剔除重复辅助函数，单独引入。
   $ yarn add -D babel-loader                     # Babel loader for webpack 该软件包允许使用 Babel 和 webpack 来转译 JavaScript 文件。
 
   $ touch .babelrc                               # 新建 babel 配置文件
@@ -343,7 +342,6 @@ trim_trailing_whitespace = false
   // .babelrc
   {
     "presets": ["@babel/preset-env", "@babel/preset-react"],
-    "plugins": ["@babel/plugin-transform-runtime"]
   }
   ```
 
@@ -738,7 +736,7 @@ trim_trailing_whitespace = false
 
 - **存在问题或待改进提升点**
 
-  1. **每次修改内容时，做到了无刷新更新，但同时也清空了组件内部状态值；这显示也是不能接受的。**
+  1. **每次修改内容时，做到了无刷新更新，但同时也清空了组件内部状态值；这显然也是不能接受的。**
 
   <br />
 
@@ -768,8 +766,7 @@ trim_trailing_whitespace = false
   ```diff
     {
       "presets": ["@babel/preset-env", "@babel/preset-react"],
-  -   "plugins": ["@babel/plugin-transform-runtime"]
-  +   "plugins": ["@babel/plugin-transform-runtime", "react-hot-loader/babel"]
+  +   "plugins": ["react-hot-loader/babel"]
     }
   ```
 
@@ -867,9 +864,236 @@ trim_trailing_whitespace = false
 
 **[⬆ back to top](#)**
 
-### 13. 完善应用
+## 完善应用
 
-> 待续...
+### 13. 引入 CSS 与 [Sass](http://sass.bootcss.com/docs/sass-reference/) 样式文件处理
+
+> 样式是前端组件重要组成部分，而 Sass 让 CSS 语言更强大、优雅；有助于保持大型样式表结构良好。
+
+> 注意：本项目引入 sass ，当然你也可以不引入或者引入其它，如：less、stylus。
+
+- **安装**
+
+  ```sh
+  $ yarn add -D node-sass      # Node-sass是一个库，提供了 Node.js 与 LibSass（流行的样式表预处理器Sass的C版本）的绑定。 它使您能够以惊人的速度通过连接中间件自动将 .scss 文件本地编译为 css
+  $ yarn add -D sass-loader    # Compiles Sass to CSS
+  $ yarn add -D css-loader     # The css-loader interprets @import and url() like import/require() and will resolve them.
+  $ yarn add -D style-loader   # Inject CSS into the DOM.
+  ```
+
+  > 注：sass基于Ruby语言开发而成，因此安装sass前需要安装Ruby。（注:mac下自带Ruby无需在安装Ruby!）
+
+  > 为什么需要 node-sass : 因为 sass-loader 的 [peerDependencies](https://docs.npmjs.com/files/package.json#peerdependencies) 声明了其依赖 node-sass，所以需要预装，否则警告。
+
+- **配置：修改 webpack.config.js 增加css/sass解析能力**
+
+  ```diff
+    ...
+
+    moduele.exports = function () {
+
+      ...
+
+      module: {
+        rules: [
+          ...
+
+  +       {
+  +         test: /\.(sa|sc|c)ss$/,
+  +         exclude: /node_modules/,
+  +         use: [
+  +           {
+  +             loader: 'style-loader'
+  +           },
+  +           {
+  +             loader: 'css-loader'
+  +           },
+  +           {
+  +             loader: 'sass-loader'
+  +           }
+  +         ]
+  +       }
+        ]
+      }
+
+      ...
+
+    }
+
+    ...
+  ```
+
+- **新增 src/index.scss 和 style/global.css 样式文件**
+
+  ```sh
+  $ cd src && touch index.scss
+  $ mkdir style && cd style
+  $ touch global.css && touch reset.css
+  ```
+
+  ```scss
+  // src/style/reset.css
+  # reset 重置浏览器初始样式，具体样式参见项目 src/style/reset.css
+
+  // src/style/global.css
+  @import url('./reset.css');
+
+  // src/index.scss
+  .app {
+    background-color: red;
+  }
+  ```
+
+- **修改 src/index.js 导入样式表**
+
+  ```diff
+    import { hot } from 'react-hot-loader';
+    import React, { useState } from 'react';
+    import ReactDom from 'react-dom';
+  + import './style/global.css';
+  + import './index.scss';
+
+    const App = hot(module)(() => {
+      const [title, setTitle] = useState('hello, world!');
+
+      const reversedTitle = () =>
+        setTitle(
+          title
+            .split('')
+            .reverse()
+            .join('')
+        );
+      return (
+  -     <div>
+  +     <div className='app'>
+          <h1>{title}</h1>
+          <button type='button' onClick={reversedTitle}>
+            reversed title!
+          </button>
+        </div>
+      );
+    });
+
+    ReactDom.render(<App />, document.getElementById('root'));
+  ```
+
+- **运行项目**
+
+  ```sh
+  $ yarn server
+
+  # 结果：
+
+  $ cross-env NODE_ENV=development webpack-dev-server --color --progress
+  10% building 1/1 modules 0 activeℹ ｢wds｣: Project is running at http://localhost:3000/
+  ℹ ｢wds｣: webpack output is served from /
+  ℹ ｢wds｣: Content not from webpack is served from /Users/mr.lemon/cl/CODE_CL/REACT/starter/public
+  ℹ ｢wds｣: 404s will fallback to /index.html
+  ℹ ｢wdm｣: Compiled successfully.
+  ```
+
+  > 打开 `http://localhost:3000/`, 如你所写，出现一个红色背景。Try it!
+
+  ![x](https://user-gold-cdn.xitu.io/2019/10/20/16de838e6d901c5e?w=2368&h=1288&f=png&s=118940)
+
+- **问题与改进点🤔**
+
+  1. **缺少自动管理浏览器前缀的插件，解析 `CSS` 文件并且添加浏览器前缀到 `CSS` 内容里；`postcss/autoprefixer`**
+  2. **当组件样式文件很多时，为了避免样式冲突，可以采用 `css-modules` 去解决这个问题。当然你也可以采用严格命名规范绕开这个问题，如：BEN。**
+
+  <br />
+
+  > 那继续吧！💪
+
+### 14. [CSS-Modules](https://github.com/css-modules/css-modules) 与 [autoprefixer](https://github.com/postcss/autoprefixer)
+
+- **安装**
+
+  ```sh
+  $ yarn add - D postcss-loader # 用于webpack的Loader以使用PostCSS处理CSS
+
+  $ yarn add -D autoprefixer # Parse CSS and add vendor prefixes to rules by Can I Use
+  ```
+
+- **新建 postcss 配置文件**
+
+  ```sh
+  $ touch postcss.config.js # 新建 postcss 配置文件
+
+  # starter/postcss.config.js 添加 autoprefixer 插件
+  module.exports = {
+    plugins: {
+      autoprefixer: {},
+    }
+  };
+  ```
+
+- **添加 webpack postcss 配置**
+
+  ```diff
+    ...
+
+    moduele.exports = function () {
+
+      ...
+
+      module: {
+        rules: [
+          ...
+
+          {
+  -         test: /\.(sa|sc|c)ss$/,
+  +         test: /\.(sa|sc)ss$/,
+            exclude: /node_modules/,
+            use: [
+              {
+                loader: 'style-loader'
+              },
+              {
+                loader: 'css-loader',
+  +             options: {
+  +               sourceMap: false,
+  +               importLoaders: 2,  // 启用/禁用或设置在CSS加载程序之前应用的加载程序的数量
+  +               modules: {
+  +                 context: path.resolve(__dirname, 'src'), // 允许为本地标识符名称重新定义基本的加载程序上下文。
+  +                 localIdentName: '[name]__[local]-[hash:base64:5]' // 使用 localIdentName 查询参数配置生成类名
+  +               }
+  +             }
+              },
+  +           {
+  +             loader: 'postcss-loader'
+  +           }
+              {
+                loader: 'sass-loader'
+              }
+            ]
+          },
+  +       {
+  +          test: /\.css$/,
+  +          exclude: /node_modules/,
+  +          use: [
+  +            {
+  +              loader: 'style-loader'
+  +            },
+  +            {
+  +              loader: 'css-loader'
+  +            }
+  +          ]
+  +       }
+        ]
+      }
+
+      ...
+
+    }
+
+    ...
+  ```
+
+  > [`postcss`](https://postcss.org/) : 一个用 `JavaScript` 转换 `CSS` 的工具 <br />
+  > [`css-loader`](https://github.com/webpack-contrib/css-loader) 提供 `CSS` 模块及其配置
+
+**待续...**
 
 ## 参阅
 
@@ -894,11 +1118,13 @@ trim_trailing_whitespace = false
 - [HotModuleReplacementPlugin](https://webpack.docschina.org/plugins/hot-module-replacement-plugin/)
 - [react-hot-loader](https://github.com/gaearon/react-hot-loader)
 - [@hot-loader/react-dom](https://github.com/gaearon/react-hot-loader#hot-loaderreact-dom)
-- []()
-- []()
-- []()
-- []()
-- []()
-- []()
-- []()
-- []()
+- [Sass](http://sass.bootcss.com/docs/sass-reference/)
+- [node-sass](https://github.com/sass/node-sass)
+- [sass-loader](https://github.com/webpack-contrib/sass-loader)
+- [css-loader](https://github.com/webpack-contrib/css-loader)
+- [style-loader](https://github.com/webpack-contrib/style-loader)
+- [peerDependencies](https://docs.npmjs.com/files/package.json#peerdependencies)
+- [autoprefixer](https://github.com/postcss/autoprefixer)
+- [css-modules](https://github.com/css-modules/css-modules)
+- [postcss-loader](https://github.com/postcss/postcss-loader)
+- [postcss](https://postcss.org/)

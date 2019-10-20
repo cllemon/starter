@@ -26,6 +26,34 @@ module.exports = function() {
           test: /\.(js|jsx)$/,
           exclude: /node_modules/,
           loader: 'babel-loader'
+        },
+        {
+          test: /\.(c|sa|sc)ss$/,
+          exclude: /node_modules/,
+          use: [
+            {
+              loader: 'style-loader'
+            },
+            {
+              loader: 'css-loader',
+              options: {
+                sourceMap: false,
+                importLoaders: 2,
+                modules: {
+                  context: path.resolve(__dirname, 'src'),
+                  localIdentName: '[name]__[local]-[hash:base64:5]'
+                }
+              }
+            },
+            {
+              loader: 'sass-loader'
+            }
+          ]
+        },
+        {
+          test: /\.css$/,
+          exclude: /node_modules/,
+          use: ['style-loader', 'css-loader']
         }
       ]
     },

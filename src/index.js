@@ -1,6 +1,8 @@
 import { hot } from 'react-hot-loader';
 import React, { useState } from 'react';
 import ReactDom from 'react-dom';
+// import './style/global.css';
+import styles from './index.scss';
 
 const App = hot(module)(() => {
   const [title, setTitle] = useState('hello, world!');
@@ -13,7 +15,7 @@ const App = hot(module)(() => {
         .join('')
     );
   return (
-    <div>
+    <div className={styles.app}>
       <h1>{title}</h1>
       <button type='button' onClick={reversedTitle}>
         reversed title!
