@@ -1,17 +1,19 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const miniCssExtractPlugin = require('mini-css-extract-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const UglifyjsWebpackPlugin = require('uglifyjs-webpack-plugin');
+// const UglifyjsWebpackPlugin = require('uglifyjs-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-// const safePostCssParser = require('postcss-safe-parser');
+const SafePostCssParser = require('postcss-safe-parser');
 const IS_PROD = process.env.NODE_ENV === 'production';
 
-module.exports = function () {
+module.exports = function() {
   const baseConfig = {
     mode: IS_PROD ? 'production' : 'development',
+
+    devtool: IS_PROD ? false : 'inline-source-map',
 
     entry: './src/index.js',
 
@@ -19,7 +21,7 @@ module.exports = function () {
       path: path.resolve(__dirname, 'dist'),
       publicPath: IS_PROD ? '/starter/' : '/',
       filename: IS_PROD ? '[name].[contenthash:8].js' : '[name].js',
-      chunkFilename: IS_PROD ? 'chunks/[name].[contenthash:8].js' : '[name].js',
+      chunkFilename: IS_PROD ? 'chunks/[name].[contenthash:8].js' : '[name].js'
     },
 
     resolve: {
@@ -27,6 +29,11 @@ module.exports = function () {
         'react-dom': '@hot-loader/react-dom' // react-hot-loader 兼容 hook 写法
       }
     },
+
+    // externals: {
+    //   react: 'React',
+    //   'react-dom': 'ReactDOM'
+    // },
 
     module: {
       rules: [
@@ -40,7 +47,7 @@ module.exports = function () {
           exclude: /node_modules/,
           use: [
             {
-              loader: IS_PROD ? miniCssExtractPlugin.loader : 'style-loader',
+              loader: IS_PROD ? MiniCssExtractPlugin.loader : 'style-loader',
               options: IS_PROD ? { publicPath: '../' } : {}
             },
             {
@@ -70,7 +77,7 @@ module.exports = function () {
           exclude: /node_modules/,
           use: [
             {
-              loader: IS_PROD ? miniCssExtractPlugin.loader : 'style-loader',
+              loader: IS_PROD ? MiniCssExtractPlugin.loader : 'style-loader',
               options: IS_PROD ? { publicPath: '../' } : {}
             },
             {
@@ -92,15 +99,15 @@ module.exports = function () {
         template: path.resolve(__dirname, 'public/index.html'),
         minify: IS_PROD
           ? {
-            removeComments: true,
-            collapseWhitespace: true,
-            removeAttributeQuotes: true,
-            collapseBooleanAttributes: true,
-            removeScriptTypeAttributes: true
-          }
+              removeComments: true,
+              collapseWhitespace: true,
+              removeAttributeQuotes: true,
+              collapseBooleanAttributes: true,
+              removeScriptTypeAttributes: true
+            }
           : {}
       }),
-      new miniCssExtractPlugin({
+      new MiniCssExtractPlugin({
         filename: IS_PROD ? 'css/[name].[contenthash:8].css' : 'css/[name].css',
         chunkFilename: IS_PROD ? 'css/[id].[contenthash:8].css' : 'css/[id].css'
       }),
@@ -110,7 +117,7 @@ module.exports = function () {
           NODE_ENV: JSON.stringify(process.env.NODE_ENV),
           BASE_URL: IS_PROD ? `"/"` : '"/"'
         }
-      }),
+      })
     ]
   };
 
@@ -122,64 +129,66 @@ module.exports = function () {
         //   sourceMap: false,
         //   cache: true,
         //   parallel: true
-        // })
+        // }),
         new TerserPlugin({
+          // Terser minify options.
           terserOptions: {
             parse: {
               // We want terser to parse ecma 8 code. However, we don't want it
               // to apply any minification steps that turns valid ecma 5 code
               // into invalid ecma 5 code. This is why the 'compress' and 'output'
               // sections only apply transformations that are ecma 5 safe
-              // https://github.com/facebook/create-react-app/pull/4234
-              ecma: 8,
+              ecma: 8
             },
             compress: {
               ecma: 5,
+              // display warnings when dropping unreachable code or unused declarations etc.
               warnings: false,
+              // apply certain optimizations to binary nodes
               // Disabled because of an issue with Uglify breaking seemingly valid code:
-              // https://github.com/facebook/create-react-app/issues/2376
-              // Pending further investigation:
-              // https://github.com/mishoo/UglifyJS2/issues/2011
+              // Pending further investigation: https://github.com/mishoo/UglifyJS2/issues/2011
               comparisons: false,
+              // inline calls to function with simple/return statement:
               // Disabled because of an issue with Terser breaking valid code:
-              // https://github.com/facebook/create-react-app/issues/5250
-              // Pending further investigation:
-              // https://github.com/terser-js/terser/issues/120
-              inline: 2,
+              // Pending further investigation: https://github.com/terser-js/terser/issues/120
+              inline: 2 // inline functions with arguments
             },
             mangle: {
-              safari10: true,
+              // Pass true to work around the Safari 10 loop iterator bug "Cannot declare a let variable twice".
+              // See also: the safari10 output option.
+              safari10: true
             },
             // Added for profiling in devtools
             keep_classnames: true,
             keep_fnames: true,
             output: {
               ecma: 5,
+              // pass true or "all" to preserve all comments, "some" to preserve some comments,
+              // a regular expression string (e.g. /^!/) or a function.
               comments: false,
+              // escape Unicode characters in strings and regexps (affects directives with non-ascii characters becoming invalid)
               // Turned on because emoji and regex is not minified properly using default
-              // https://github.com/facebook/create-react-app/issues/2488
-              ascii_only: true,
-            },
+              ascii_only: true
+            }
           },
-          // Use multi-process parallel running to improve the build speed
-          // Default number of concurrent runs: os.cpus().length - 1
-          // Disabled on WSL (Windows Subsystem for Linux) due to an issue with Terser
-          // https://github.com/webpack-contrib/terser-webpack-plugin/issues/21
-          // parallel: !isWsl,
+          // Use multi-process parallel running to improve the build speed.
+          //Default number of concurrent runs: os.cpus().length - 1.
           parallel: true,
-          // Enable file caching
-          cache: true,
-          sourceMap: false,
+          cache: true // Enable file caching
         }),
         new OptimizeCSSAssetsPlugin({
-          // cssProcessorOptions: {
-          //   parser: safePostCssParser,
-          //   map: false,
-          // },
-        }),
+          // The options passed to the cssProcessor, defaults to {}
+          // cssProcessor: The CSS processor used to optimize \ minimize the CSS, defaults to cssnano.
+          //               This should be a function that follows cssnano.process interface
+          //               (receives a CSS and options parameters and returns a Promise).
+          cssProcessorOptions: {
+            parser: SafePostCssParser, // 查找并修复CSS语法错误。
+            map: false
+          }
+        })
       ],
       splitChunks: {
-        chunks: 'all',
+        chunks: 'all'
       }
     };
   }
