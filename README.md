@@ -433,7 +433,7 @@ trim_trailing_whitespace = false
     ├── package.json
     ├── README.md
   + └── yarn.lock
-    ```
+  ```
 
 **[⬆ back to top](#)**
 
@@ -762,7 +762,7 @@ trim_trailing_whitespace = false
 - **安装**
 
   ```sh
-  $ yarn add -D react-hot-loader
+  $ yarn add react-hot-loader
   $ yarn add @hot-loader/react-dom # 替换了相同版本的 react-dom 软件包，但附加了一些补丁以支持热重装。
   ```
 
@@ -1015,6 +1015,8 @@ trim_trailing_whitespace = false
 
   > 那继续吧！💪
 
+**[⬆ back to top](#)**
+
 ### 14. [CSS-Modules](https://github.com/css-modules/css-modules) 与 [autoprefixer](https://github.com/postcss/autoprefixer)
 
 - **安装**
@@ -1161,6 +1163,8 @@ trim_trailing_whitespace = false
 
   ![x](https://user-gold-cdn.xitu.io/2019/10/21/16dec36f23e2e8d6?w=1020&h=623&f=jpeg&s=72261)
 
+**[⬆ back to top](#)**
+
 ### 15. 更进一步，构建我们的应用 `yarn build`
 
 - **打包**
@@ -1191,6 +1195,8 @@ trim_trailing_whitespace = false
   ```
 
   > 我们看到这只打出一个 `bundle.js` 这显然做的还不够。接下来，我们做几点改变！
+
+  **[⬆ back to top](#)**
 
 - **管理输出**
 
@@ -1325,6 +1331,8 @@ trim_trailing_whitespace = false
 
     > 注：如果你仔细看了我们的输出，你会发现 `main.2f781ad1.js size=136KiB`, 而我们的代码却量却很少，如果你打开该文件你会发现它包含了 `react.production.min.js` `babel` 所需的帮助函数等。
 
+  **[⬆ back to top](#)**
+
 - **代码分离**
 
   - **[mini-css-extract-plugin](https://webpack.docschina.org/plugins/mini-css-extract-plugin/) - 分离 css 代码**
@@ -1340,7 +1348,7 @@ trim_trailing_whitespace = false
     ```diff
     <!-- starter/webpack.config.js -->
       ...
-    + const miniCssExtractPlugin = require('mini-css-extract-plugin');
+    + const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
       module: {
         rules: [
@@ -1355,7 +1363,7 @@ trim_trailing_whitespace = false
             use: [
               {
     -           loader: 'style-loader'
-    +           loader: IS_PROD ? miniCssExtractPlugin.loader : 'style-loader',
+    +           loader: IS_PROD ? MiniCssExtractPlugin.loader : 'style-loader',
     +           options: IS_PROD ? { publicPath: '../' } : {}
               },
               {
@@ -1383,7 +1391,7 @@ trim_trailing_whitespace = false
     -       use: ['style-loader', 'css-loader', 'postcss-loader']
     +       use: [
     +         {
-    +           loader: IS_PROD ? miniCssExtractPlugin.loader : 'style-loader',
+    +           loader: IS_PROD ? MiniCssExtractPlugin.loader : 'style-loader',
     +           options: IS_PROD ? { publicPath: '../' } : {}
     +         },
     +         'css-loader',
@@ -1394,7 +1402,7 @@ trim_trailing_whitespace = false
       },
     + plugins: [
         ...,
-    +   new miniCssExtractPlugin({
+    +   new MiniCssExtractPlugin({
     +     filename: IS_PROD ? 'css/[name].[contenthash:8].css' : 'css/[name].css',
     +     chunkFilename: IS_PROD ? 'css/[id].[contenthash:8].css' : 'css/[id].css'
     +   })
@@ -1446,6 +1454,8 @@ trim_trailing_whitespace = false
     ```
 
     > 试试看👀，清理干净了 (｡･∀･)ﾉﾞ **Try it!**
+
+  **[⬆ back to top](#)**
 
 - **防止重复**
 
@@ -1502,6 +1512,8 @@ trim_trailing_whitespace = false
 
     > [webpack 4: Code Splitting, chunk graph and the splitChunks optimization](https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366)
 
+    **[⬆ back to top](#)**
+
   - **[@babel/plugin-transform-runtime](https://babeljs.io/docs/en/babel-plugin-transform-runtime) 一个插件，可重新使用Babel注入的帮助程序代码以节省代码大小。**
 
     ```sh
@@ -1544,6 +1556,8 @@ trim_trailing_whitespace = false
       # 可以比对上次构建结果，主文件减少了一些。
     ```
 
+    **[⬆ back to top](#)**
+
   - **[webpack.DefinePlugin](https://webpack.docschina.org/plugins/define-plugin/#%E7%94%A8%E6%B3%95) 允许创建一个在编译时可以配置的全局常量**
 
     > 插件可配置一些全局变量，在构建时将会对代码内引用的这些变量进行替换。比如：NODE_ENV(常用于处理生产环境与开发环境)。如果在开发构建中，而不在发布构建中执行日志记录，则可以使用全局常量来决定是否记录日志。这就是 DefinePlugin 的用处，设置它，就可以忘记开发环境和生产环境构建的规则。
@@ -1568,6 +1582,8 @@ trim_trailing_whitespace = false
     ```
 
     > 这里如果你的代码没有对区分环境，做特定处理（去除开发环境下的代码）则，包尺寸不变。
+
+    **[⬆ back to top](#)**
 
 - **minify JavaScript / css**
 
@@ -1627,6 +1643,8 @@ trim_trailing_whitespace = false
 
     > 参考：[为什么 webpack4 默认支持 ES6 语法的压缩？](https://juejin.im/post/5d706172f265da03ca118d28)
 
+    **[⬆ back to top](#)**
+
   - **[terser-webpack-plugin](https://github.com/webpack-contrib/terser-webpack-plugin)**
 
     > 我们用 `terser-webpack-plugin` 替换 `uglifyjs-webpack-plugin`
@@ -1638,6 +1656,9 @@ trim_trailing_whitespace = false
     ```diff
     <!-- starter/webpack.config.js -->
 
+    - const UglifyjsWebpackPlugin = require('uglifyjs-webpack-plugin');
+    + const TerserPlugin = require('terser-webpack-plugin');
+
       if (IS_PROD) {
         baseConfig.optimization = {
           minimizer: [
@@ -1648,30 +1669,31 @@ trim_trailing_whitespace = false
     -         parallel: true
     -       }),
     +       new TerserPlugin({
+    +         // Terser minify options.
     +         terserOptions: {
     +           parse: {
     +             // We want terser to parse ecma 8 code. However, we don't want it
     +             // to apply any minification steps that turns valid ecma 5 code
     +             // into invalid ecma 5 code. This is why the 'compress' and 'output'
     +             // sections only apply transformations that are ecma 5 safe
-    +             // https://github.com/facebook/create-react-app/pull/4234
     +             ecma: 8,
     +           },
     +           compress: {
     +             ecma: 5,
+    +             // display warnings when dropping unreachable code or unused declarations etc.
     +             warnings: false,
+    +             // apply certain optimizations to binary nodes
     +             // Disabled because of an issue with Uglify breaking seemingly valid code:
-    +             // https://github.com/facebook/create-react-app/issues/2376
-    +             // Pending further investigation:
-    +             // https://github.com/mishoo/UglifyJS2/issues/2011
+    +             // Pending further investigation: https://github.com/mishoo/UglifyJS2/issues/2011
     +             comparisons: false,
+    +             // inline calls to function with simple/return statement:
     +             // Disabled because of an issue with Terser breaking valid code:
-    +             // https://github.com/facebook/create-react-app/issues/5250
-    +             // Pending further investigation:
-    +             // https://github.com/terser-js/terser/issues/120
-    +             inline: 2,
+    +             // Pending further investigation: https://github.com/terser-js/terser/issues/120
+    +             inline: 2, // inline functions with arguments
     +           },
     +           mangle: {
+    +             // Pass true to work around the Safari 10 loop iterator bug "Cannot declare a let variable twice".
+    +             // See also: the safari10 output option.
     +             safari10: true,
     +           },
     +           // Added for profiling in devtools
@@ -1679,21 +1701,18 @@ trim_trailing_whitespace = false
     +           keep_fnames: true,
     +           output: {
     +             ecma: 5,
+    +             // pass true or "all" to preserve all comments, "some" to preserve some comments,
+    +             // a regular expression string (e.g. /^!/) or a function.
     +             comments: false,
+    +             // escape Unicode characters in strings and regexps (affects directives with non-ascii characters becoming invalid)
     +             // Turned on because emoji and regex is not minified properly using default
-    +             // https://github.com/facebook/create-react-app/issues/2488
     +             ascii_only: true,
     +           },
     +         },
-    +         // Use multi-process parallel running to improve the build speed
-    +         // Default number of concurrent runs: os.cpus().length - 1
-    +         // Disabled on WSL (Windows Subsystem for Linux) due to an issue with Terser
-    +         // https://github.com/webpack-contrib/terser-webpack-plugin/issues/21
-    +         // parallel: !isWsl,
-    +         parallel: false,
-    +         // Enable file caching
-    +         cache: true,
-    +         sourceMap: false,
+    +         // Use multi-process parallel running to improve the build speed.
+    +         //Default number of concurrent runs: os.cpus().length - 1.
+    +         parallel: true,
+    +         cache: true, // Enable file caching
     +       }),
           ],
           splitChunks: {
@@ -1713,7 +1732,7 @@ trim_trailing_whitespace = false
       Built at: 2019-10-21 17:52:26
 
                                         Asset     Size             Chunks                  Chunk Names
-              chunks/vendors~main.ae62441b.js    130 KiB       1  [emitted] [immutable]    vendors~main
+    !         chunks/vendors~main.ae62441b.js    130 KiB       1  [emitted] [immutable]    vendors~main
     ! chunks/vendors~main.ae62441b.js.LICENSE    790 bytes        [emitted]
                         css/main.f9cee851.css    1.08 KiB      0  [emitted] [immutable]       main
                                    index.html    667 bytes        [emitted]
@@ -1722,16 +1741,176 @@ trim_trailing_whitespace = false
       Entrypoint main = chunks/vendors~main.ae62441b.js css/main.f9cee851.css main.2130b172.js
     ```
 
-  - **optimize-css-assets-webpack-plugin**
+    **[⬆ back to top](#)**
+
+  - **[optimize-css-assets-webpack-plugin](https://github.com/NMFR/optimize-css-assets-webpack-plugin) - 优化/减少CSS资产**
 
     ```sh
-    $ yarn add -D optimize-css-assets-webpack-plugin
+    $ yarn add -D optimize-css-assets-webpack-plugin # 压缩 CSS
+    $ yarn add -D postcss-safe-parser                # 查找并修复 CSS 语法错误
     ```
 
-- **提升构建速度**
+    ```diff
+    <!-- starter/webpack.config.js -->
+      ...
+
+    + const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+    + const SafePostCssParser = require('postcss-safe-parser');
+
+        if (IS_PROD) {
+          baseConfig.optimization = {
+            minimizer: [
+              ...
+
+    +         new OptimizeCSSAssetsPlugin({
+    +           // The options passed to the cssProcessor, defaults to {}
+    +           // cssProcessor: The CSS processor used to optimize \ minimize the CSS, defaults to cssnano.
+    +           //               This should be a function that follows cssnano.process interface
+    +           //               (receives a CSS and options parameters and returns a Promise).
+    +           cssProcessorOptions: {
+    +             parser: SafePostCssParser,
+    +             map: false,
+    +           },
+    +         })
+            ],
+
+            ...
+          };
+        }
+
+      ...
+    ```
+
+    ```diff
+      $ yarn build # 打包实验 ✅
 
 
-### 16. 引入路由
+      # 结果
+
+      $ cross-env NODE_ENV=production webpack --color --progress
+      Hash: dbf5243d5591e4ac0268
+      Version: webpack 4.41.2
+      Time: 3543ms
+      Built at: 2019-10-21 20:17:23
+
+                                        Asset     Size                  Chunks            Chunk Names
+              chunks/vendors~main.ae62441b.js    130 KiB       1  [emitted] [immutable]   vendors~main
+      chunks/vendors~main.ae62441b.js.LICENSE    790 bytes        [emitted]
+    !                   css/main.f9cee851.css    869 bytes     0  [emitted] [immutable]       main
+                                   index.html    667 bytes        [emitted]
+                             main.2130b172.js    2.52 KiB      0  [emitted] [immutable]       main
+
+      Entrypoint main = chunks/vendors~main.ae62441b.js css/main.f9cee851.css main.2130b172.js
+    ```
+
+    **[⬆ back to top](#)**
+
+- **外部扩展([externals](https://webpack.docschina.org/configuration/externals/#src/components/Sidebar/Sidebar.jsx))**
+
+  > 从输出的 bundle 中排除依赖; 防止将某些 import 的包打包到 bundle 中，而是在运行时(runtime)再去从外部获取这些扩展依赖(external dependencies)。
+
+  - **CDN - 此步可忽略**
+
+    ```diff
+    <!-- starter/webpack.config.js -->
+
+      ...
+
+      module.exports = function() {
+        const baseConfig = {
+
+          ...
+
+          resolve: {
+            alias: {
+              'react-dom': '@hot-loader/react-dom' // react-hot-loader 兼容 hook 写法
+            }
+          },
+
+    +     externals: {
+    +       react: 'React',
+    +       'react-dom': 'ReactDOM'
+    +     },
+
+          ...
+
+        }
+
+        ...
+
+
+    <!--  starter/public/index.html -->
+      ...
+
+        <div id="root"></div>
+    +   <script crossorigin src="https://unpkg.com/react@16.10.2/umd/react.production.min.js"></script>
+    +   <script crossorigin src="https://unpkg.com/@hot-loader/react-dom@16.10.2/umd/react-dom.production.min.js"></script>
+
+      ...
+    ```
+
+    ```diff
+      $ yarn build
+
+      $ cross-env NODE_ENV=production webpack --color --progress
+        Hash: 6bb2de2632bdaf2dc081
+        Version: webpack 4.41.2
+        Time: 2557ms
+        Built at: 2019-10-21 21:35:38
+                        Asset       Size                Chunks             Chunk Names
+        css/main.34dd0d40.css     869 bytes     0  [emitted] [immutable]      main
+                   index.html     811 bytes        [emitted]
+             main.da7fbe78.js     3.85 KiB      0  [emitted] [immutable]      main
+        Entrypoint main = css/main.34dd0d40.css main.da7fbe78.js
+    ```
+
+    > **1. [CDN是什么？使用CDN有什么优势？](https://www.zhihu.com/question/36514327?rf=37353035)**<br>
+    > **2. 几个 CDN 公共库：[cdnjs](https://github.com/cdnjs/cdnjs)、[jsdelivr](https://www.jsdelivr.com/)、[unpkg](https://unpkg.com/)**<br>
+    > **3. 为提高访问速度，最好把前端不常更新的类库，如，react、react-dom、axios、moment等从输出的 bundle 中排除依赖**<br>
+    > **4. 提示，最好自己弄个，用自己的总是来得保险一些 🤡**
+
+    **[⬆ back to top](#)**
+
+- **工程目录**
+
+  ```diff
+    └── starter
+  + ├── dist
+  + │   └── chunks
+  + │   │   ├── vendors~main.ae62441b.js
+  + │   │   └── vendors~main.ae62441b.js.LICENSE
+  +     ├── css
+  + │   │   └── main.f9cee851.css
+  + │   ├── index.html
+  + │   └── main.2130b172.js
+    ├── node_modules
+    ├── public
+    │   ├── favicon.ico
+    │   └── index.html
+    ├── src
+    │   ├── index.js
+  + │   ├── index.scss
+  + │   └── style
+  + │       ├── global.css
+  + │       └── reset.css
+  + ├── postcss.config.js
+    ├── webpack.config.js
+    ├── package.json
+    ├── README.md
+    ├── LICENSE
+    └── yarn.lock
+  ```
+
+- **阶段结语**
+
+  1. 至此整个构建过程和构建过程中所做的优化点都已经大致论述完毕，当然不足之处还有一些。📚
+  2. 离完整的工程还有很多工作要做，继续吧！🔥👇🔥
+
+### 16. 完善我们的应用
+
+待续...
+
+### 17. 引入路由
 
 > 前端单页应用，路由必不可少，目前主流框架都有配套路由插件，这里配合所选框架引入 [react-router-dom](https://reacttraining.com/react-router/web/guides/quick-start)
 
@@ -1886,3 +2065,13 @@ trim_trailing_whitespace = false
 - [UglifyJS2/issues/659](https://github.com/mishoo/UglifyJS2/issues/659)
 - [为什么 webpack4 默认支持 ES6 语法的压缩？](https://juejin.im/post/5d706172f265da03ca118d28)
 - [terser-webpack-plugin](https://github.com/webpack-contrib/terser-webpack-plugin)
+- [terser](https://terser.org/)
+- [optimize-css-assets-webpack-plugin](https://github.com/NMFR/optimize-css-assets-webpack-plugin)
+- [postcss-safe-parser](https://github.com/postcss/postcss-safe-parser)
+- [cssnano](https://github.com/cssnano/cssnano)
+- [externals](https://webpack.docschina.org/configuration/externals/#src/components/Sidebar/Sidebar.jsx)
+- [cdnjs](https://cdnjs.com/)
+- [jsdelivr](https://www.jsdelivr.com/)
+- [CDN是什么？使用CDN有什么优势？](https://www.zhihu.com/question/36514327?rf=37353035)
+- [内容分发网络(Content Delivery Network)](https://zh.wikipedia.org/wiki/%E5%85%A7%E5%AE%B9%E5%82%B3%E9%81%9E%E7%B6%B2%E8%B7%AF)
+- [UNPKG](https://unpkg.com/)
