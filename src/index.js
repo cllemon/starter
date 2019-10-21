@@ -1,7 +1,7 @@
 import { hot } from 'react-hot-loader';
 import React, { useState } from 'react';
 import ReactDom from 'react-dom';
-// import './style/global.css';
+import './style/global.css';
 import styles from './index.scss';
 
 const App = hot(module)(() => {
