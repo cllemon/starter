@@ -26,7 +26,10 @@ module.exports = function() {
 
     resolve: {
       alias: {
-        'react-dom': '@hot-loader/react-dom' // react-hot-loader 兼容 hook 写法
+        'react-dom': '@hot-loader/react-dom', // react-hot-loader 兼容 hook 写法
+        '@': path.resolve(__dirname, 'src'),
+        assets: path.resolve(__dirname, 'src/assets'),
+        style: path.resolve(__dirname, 'src/style')
       }
     },
 
@@ -87,6 +90,68 @@ module.exports = function() {
               }
             },
             'postcss-loader'
+          ]
+        },
+        {
+          test: /\.(png|jpe?g|gif|webp)(\?.*)?$/,
+          use: [
+            {
+              loader: 'url-loader',
+              options: {
+                limit: 4096,
+                fallback: {
+                  loader: 'file-loader',
+                  options: {
+                    name: 'images/[name].[hash:8].[ext]'
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          test: /\.(svg)(\?.*)?$/,
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                name: 'svg/[name].[hash:8].[ext]'
+              }
+            }
+          ]
+        },
+        {
+          test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/i,
+          use: [
+            {
+              loader: 'url-loader',
+              options: {
+                limit: 4096,
+                fallback: {
+                  loader: 'file-loader',
+                  options: {
+                    name: 'fonts/[name].[hash:8].[ext]'
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
+          use: [
+            {
+              loader: 'url-loader',
+              options: {
+                limit: 4096,
+                fallback: {
+                  loader: 'file-loader',
+                  options: {
+                    name: 'media/[name].[hash:8].[ext]'
+                  }
+                }
+              }
+            }
           ]
         }
       ]
