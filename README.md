@@ -1914,7 +1914,7 @@ trim_trailing_whitespace = false
 
 > 这块论述需要在斟酌
 
-### 17. 引入路由
+### 16. 引入路由
 
   > 前端单页应用，路由必不可少，目前主流框架都有配套路由插件，这里配合所选框架引入 [react-router-dom](https://reacttraining.com/react-router/web/guides/quick-start)
 
@@ -1987,11 +1987,11 @@ trim_trailing_whitespace = false
     }
     ```
 
+    > 这里根据路由配置文档编写的，仅做 DEMO 使用；详情参阅 [react-router: Route Config](https://reacttraining.com/react-router/web/example/route-config)
+
   - **路由表 - src/router/list.js**
 
     ```js
-    import BottomTabNavigator from '../components/BottomTabNavigator/BottomTabNavigator';
-    import NotFound from '../components/NotFound/NotFound';
     import Github from '../views/Github/Github';
     import Setting from '../views/Setting/Setting';
 
@@ -1999,32 +1999,356 @@ trim_trailing_whitespace = false
       {
         path: '/',
         exact: true,
-        redirect: '/dashboard/github'
+        redirect: '/github'
       },
       {
-        path: '/dashboard',
-        component: BottomTabNavigator,
-        routes: [
-          {
-            path: '/dashboard/github',
-            component: Github
-          },
-          {
-            path: '/dashboard/setting',
-            component: Setting
-          },
-        ]
+        path: '/github',
+        component: Github,
       },
       {
-        path: '*',
-        component: NotFound
+        path: '/setting',
+        component: Setting,
       }
     ];
 
     export default routes;
     ```
 
-    > **根据上述简单的草图，我们编写了上述路由表**
+    > 这里的命名你可以随意创建🙄
+
+- **新建 Setting、GitHub 页面，并编写**
+
+  ```sh
+  # 新建 Setting、GitHub 页面
+  $ cd src/views
+  $ mkdir Github && cd Github
+  $ touch Github.js && touch Github.scss
+  $ cd ..
+
+  $ mkdir Setting && cd Setting
+  $ touch Setting.js && touch Setting.scss
+  $ cd ..
+  ```
+
+  ```jsx
+  // starter/Github/Github.js
+  import React from 'react';
+  import { useHistory } from 'react-router-dom';
+  import styles from './Github.scss';
+
+  function Github() {
+    const history = useHistory();
+
+    function handleClick() {
+      history.push('/setting');
+    }
+
+    return (
+      <div className={`${styles.root}`}>
+        <h1>Github</h1>
+        <div className={`${styles.bg} ${styles.wh}`}>
+          {`当前环境： ${process.env.NODE_ENV}`}
+        </div>
+        <button type='button' onClick={handleClick}>
+          Go setting
+        </button>
+      </div>
+    );
+  }
+
+  export default Github;
+
+  // starter/Setting/Setting.js
+  import React from 'react';
+  import { useHistory } from 'react-router-dom';
+  import styles from './Setting.scss';
+
+  function Setting() {
+    const history = useHistory();
+
+    function handleClick() {
+      history.push('/github');
+    }
+
+    return (
+      <div className={`${styles.root}`}>
+        <h1>Setting</h1>
+        <div className={`${styles.bg} ${styles.wh}`}>
+          {`当前环境： ${process.env.NODE_ENV}`}
+        </div>
+        <button type='button' onClick={handleClick}>
+          Go github
+        </button>
+      </div>
+    );
+  }
+
+  export default Setting;
+  ```
+
+  ```scss
+  // starter/Setting/Setting.scss
+  .root {
+    .wh {
+      width: 200px;
+      height: 180px;
+    }
+    .bg {
+      text-align: center;
+      line-height: 180px;
+      background: no-repeat url('../../assets/images/logo.png');
+    }
+  }
+  // starter/Github/Github.scss
+  .root {
+    .wh {
+      width: 200px;
+      height: 200px;
+    }
+    .bg {
+      text-align: center;
+      line-height: 200px;
+      background: no-repeat url('../../assets/images/logo.png');
+    }
+  }
+  ```
+
+  **由于样式引入图片，所以我们新建资源存放文件夹，用来存放这些资源**
+
+  ```sh
+  $ cd src && mkdir assets
+  $ cd assets && mkdir images
+  $ cd images
+  $ copy logo.png # 这里的图标是官网搂过来的，🤣
+  ```
+
+- **修改我们的主文件 src/index.js**
+
+  ```diff
+    import { hot } from 'react-hot-loader';
+  - import React, { useState } from 'react';
+  + import React from 'react';
+    import ReactDom from 'react-dom';
+  - import './style/global.css';
+  + import 'style/global.css';
+  - import styles from './index.scss';
+  + import Router from '@/router/index';
+
+  - const App = hot(module)(() => {
+  -   const reversedTitle = () =>
+  -     setTitle(
+  -       title
+  -         .split('')
+  -         .reverse()
+  -         .join('')
+  -     );
+  -   return (
+  -     <div className={styles.app}>
+  -       <h1>{title}</h1>
+  -       <button type='button' onClick={reversedTitle}>
+  -         reversed title!
+  -       </button>
+  -     </div>
+  -   );
+  - });
+
+  + const App = hot(module)(() => (
+  +   <div className='app'>
+  +     <Router />
+  +   </div>
+  + ));
+
+    ReactDom.render(<App />, document.getElementById('root'));
+  ```
+
+- **现在一切准备就绪，但在启动项目之前，首先说明几点**
+
+  1. **( 我们在页面内引入了图片，随着项目的增长后续可能会引入字体图标、音频等文件 ) 这里我们利用 webpack 帮我们统一管理这些资源**
+  2. **随着项目深入，目录结构也必将越来越复杂，我们利用 `webpack` - `resolve.alias`, 创建 import 或 require 的别名，来确保模块引入变得更简单。**
+
+  > 做点改进吧️ ⚓️
+
+### 17. [管理资源](https://webpack.docschina.org/guides/asset-management/#%E5%8A%A0%E8%BD%BD-images-%E5%9B%BE%E5%83%8F)、优化[模块解析](https://webpack.docschina.org/configuration/resolve/#resolve-alias)
+
+- **模块解析**
+
+  ```diff
+  <!-- starter/webpack.config.js -->
+    ...
+
+      resolve: {
+        alias: {
+          'react-dom': '@hot-loader/react-dom', // react-hot-loader 兼容 hook 写法
+  +       '@': path.resolve(__dirname, 'src'),
+  +       assets: path.resolve(__dirname, 'src/assets'),
+  +       style: path.resolve(__dirname, 'src/style')
+        }
+      },
+
+    ...
+  ```
+
+- **修改相关模块引入**
+
+  ```diff
+  <!-- starter/Setting/Setting.scss / starter/Github/Github.scss -->
+
+      .bg {
+        text-align: center;
+        line-height: 180px;
+  -     background: no-repeat url('../../assets/images/logo.png');
+  +     background: no-repeat url('assets/images/logo.png');
+      }
+  ```
+
+- **管理资源**
+
+  ```sh
+  # 安装
+
+  $ yarn add -D url-loader  # 将文件转换为 base64 URI。
+  $ yarn add -D file-loader # 将文件上的 import/require() 解析为 url，并将该文件发射到输出目录中。
+  ```
+
+  ```diff
+    module: {
+      rules: [
+        ...
+
+  +     {
+  +       test: /\.(png|jpe?g|gif|webp)(\?.*)?$/, // 匹配这些格式的图片
+  +       use: [
+  +         {
+  +           loader: 'url-loader',
+  +           options: {
+  +             limit: 4096, // 文件大小等于或大于限制，则将使用 file-loader。
+  +             fallback: {
+  +               loader: 'file-loader',
+  +               options: {
+  +                 name: 'images/[name].[hash:8].[ext]'
+  +               }
+  +             }
+  +           }
+  +         }
+  +       ]
+  +     },
+  +     {
+  +       test: /\.(svg)(\?.*)?$/,
+  +       use: [
+  +         {
+  +           loader: 'file-loader',
+  +           options: {
+  +             name: 'svg/[name].[hash:8].[ext]'
+  +           }
+  +         }
+  +       ]
+  +     },
+  +     {
+  +       test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/i,
+  +       use: [
+  +         {
+  +           loader: 'url-loader',
+  +           options: {
+  +             limit: 4096,
+  +             fallback: {
+  +               loader: 'file-loader',
+  +               options: {
+  +                 name: 'fonts/[name].[hash:8].[ext]'
+  +               }
+  +             }
+  +           }
+  +         }
+  +       ]
+  +     },
+  +     {
+  +       test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
+  +       use: [
+  +         {
+  +           loader: 'url-loader',
+  +           options: {
+  +             limit: 4096,
+  +             fallback: {
+  +               loader: 'file-loader',
+  +               options: {
+  +                 name: 'media/[name].[hash:8].[ext]'
+  +               }
+  +             }
+  +           }
+  +         }
+  +       ]
+  +     }
+  +   ]
+    }
+  ```
+
+  > 这里我们虽然没有引入 `svg`、字体图标文件、音频文件，但是这里我们索性把其配置添加。
+
+- **好了，我们启动我们的项目**
+
+  ```sh
+  $ yarn server
+  ```
+
+## 参阅
+
+- [git](https://git-scm.com/downloads)
+- [gitignore](https://help.github.com/en/articles/ignoring-files#create-a-local-gitignore)
+- [node.js](http://nodejs.cn/)
+- [npm](https://docs.npmjs.com/about-npm/)
+- [yarn](https://yarn.bootcss.com/)
+- [editorconfig]( http://editorconfig.org)
+- [browserslist](https://github.com/browserslist/browserslist)
+- [webpack](https://webpack.docschina.org/guides/)
+- [React](https://github.com/facebook/react/)
+- [Babel](https://babel.docschina.org/)
+- [@babel/core](https://babeljs.io/docs/en/next/babel-core.html)
+- [@babel/preset-env](https://babeljs.io/docs/en/babel-preset-env#docsNav)
+- [@babel/preset-react](https://babeljs.io/docs/en/babel-preset-react#docsNav)
+- [@babel/plugin-transform-runtime](https://babeljs.io/docs/en/babel-plugin-transform-runtime#docsNav)
+- [babel-loader](https://github.com/babel/babel-loader)
+- [webpack-dev-server](https://webpack.docschina.org/configuration/dev-server/)
+- [cross-env](https://github.com/kentcdodds/cross-env)
+- [webpack mode](https://webpack.docschina.org/guides/production/#%E6%8C%87%E5%AE%9A-mode)
+- [HotModuleReplacementPlugin](https://webpack.docschina.org/plugins/hot-module-replacement-plugin/)
+- [react-hot-loader](https://github.com/gaearon/react-hot-loader)
+- [@hot-loader/react-dom](https://github.com/gaearon/react-hot-loader#hot-loaderreact-dom)
+- [Sass](http://sass.bootcss.com/docs/sass-reference/)
+- [node-sass](https://github.com/sass/node-sass)
+- [sass-loader](https://github.com/webpack-contrib/sass-loader)
+- [css-loader](https://github.com/webpack-contrib/css-loader)
+- [style-loader](https://github.com/webpack-contrib/style-loader)
+- [peerDependencies](https://docs.npmjs.com/files/package.json#peerdependencies)
+- [autoprefixer](https://github.com/postcss/autoprefixer)
+- [css-modules](https://github.com/css-modules/css-modules)
+- [postcss-loader](https://github.com/postcss/postcss-loader)
+- [postcss](https://postcss.org/)
+- [react-router-dom](https://reacttraining.com/react-router/web/guides/quick-start)
+- [html-webpack-plugin](https://webpack.docschina.org/plugins/html-webpack-plugin/)
+- [mini-css-extract-plugin](https://webpack.docschina.org/plugins/mini-css-extract-plugin/)
+- [clean-webpack-plugin](https://github.com/johnagan/clean-webpack-plugin)
+- [optimization.splitChunks](https://webpack.docschina.org/plugins/split-chunks-plugin/#optimization-splitchunks)
+- [@babel/plugin-transform-runtime](https://babeljs.io/docs/en/babel-plugin-transform-runtime)
+- [webpack.DefinePlugin](https://webpack.docschina.org/plugins/define-plugin/#%E7%94%A8%E6%B3%95)
+- [uglifyjs-webpack-plugin](https://webpack.docschina.org/plugins/uglifyjs-webpack-plugin/#src/components/Sidebar/Sidebar.jsx)
+- [UglifyJS2/issues/659](https://github.com/mishoo/UglifyJS2/issues/659)
+- [为什么 webpack4 默认支持 ES6 语法的压缩？](https://juejin.im/post/5d706172f265da03ca118d28)
+- [terser-webpack-plugin](https://github.com/webpack-contrib/terser-webpack-plugin)
+- [terser](https://terser.org/)
+- [optimize-css-assets-webpack-plugin](https://github.com/NMFR/optimize-css-assets-webpack-plugin)
+- [postcss-safe-parser](https://github.com/postcss/postcss-safe-parser)
+- [cssnano](https://github.com/cssnano/cssnano)
+- [externals](https://webpack.docschina.org/configuration/externals/#src/components/Sidebar/Sidebar.jsx)
+- [cdnjs](https://cdnjs.com/)
+- [jsdelivr](https://www.jsdelivr.com/)
+- [CDN是什么？使用CDN有什么优势？](https://www.zhihu.com/question/36514327?rf=37353035)
+- [内容分发网络(Content Delivery Network)](https://zh.wikipedia.org/wiki/%E5%85%A7%E5%AE%B9%E5%82%B3%E9%81%9E%E7%B6%B2%E8%B7%AF)
+- [UNPKG](https://unpkg.com/)
+- [react-router](https://github.com/ReactTraining/react-router)
+- [管理资源](https://webpack.docschina.org/guides/asset-management/#%E5%8A%A0%E8%BD%BD-images-%E5%9B%BE%E5%83%8F)
+- [模块解析](https://webpack.docschina.org/configuration/resolve/#resolve-alias)
+- [url-loader](https://github.com/webpack-contrib/url-loader)
+
+> **根据上述简单的草图，我们编写了上述路由表**
 
 - **根据我们的路由表，编写的相关页面, 并调整我们的工程目录，以下展示的是调整之后的工程目录**
 
@@ -2128,58 +2452,3 @@ trim_trailing_whitespace = false
       2. 字体图标可在 [阿里 iconfont 定制](https://www.iconfont.cn/)
 
     **b. 由于我们添加了相关图标和图片文件，我们。。。**
-
-## 参阅
-
-- [git](https://git-scm.com/downloads)
-- [gitignore](https://help.github.com/en/articles/ignoring-files#create-a-local-gitignore)
-- [node.js](http://nodejs.cn/)
-- [npm](https://docs.npmjs.com/about-npm/)
-- [yarn](https://yarn.bootcss.com/)
-- [editorconfig]( http://editorconfig.org)
-- [browserslist](https://github.com/browserslist/browserslist)
-- [webpack](https://webpack.docschina.org/guides/)
-- [React](https://github.com/facebook/react/)
-- [Babel](https://babel.docschina.org/)
-- [@babel/core](https://babeljs.io/docs/en/next/babel-core.html)
-- [@babel/preset-env](https://babeljs.io/docs/en/babel-preset-env#docsNav)
-- [@babel/preset-react](https://babeljs.io/docs/en/babel-preset-react#docsNav)
-- [@babel/plugin-transform-runtime](https://babeljs.io/docs/en/babel-plugin-transform-runtime#docsNav)
-- [babel-loader](https://github.com/babel/babel-loader)
-- [webpack-dev-server](https://webpack.docschina.org/configuration/dev-server/)
-- [cross-env](https://github.com/kentcdodds/cross-env)
-- [webpack mode](https://webpack.docschina.org/guides/production/#%E6%8C%87%E5%AE%9A-mode)
-- [HotModuleReplacementPlugin](https://webpack.docschina.org/plugins/hot-module-replacement-plugin/)
-- [react-hot-loader](https://github.com/gaearon/react-hot-loader)
-- [@hot-loader/react-dom](https://github.com/gaearon/react-hot-loader#hot-loaderreact-dom)
-- [Sass](http://sass.bootcss.com/docs/sass-reference/)
-- [node-sass](https://github.com/sass/node-sass)
-- [sass-loader](https://github.com/webpack-contrib/sass-loader)
-- [css-loader](https://github.com/webpack-contrib/css-loader)
-- [style-loader](https://github.com/webpack-contrib/style-loader)
-- [peerDependencies](https://docs.npmjs.com/files/package.json#peerdependencies)
-- [autoprefixer](https://github.com/postcss/autoprefixer)
-- [css-modules](https://github.com/css-modules/css-modules)
-- [postcss-loader](https://github.com/postcss/postcss-loader)
-- [postcss](https://postcss.org/)
-- [react-router-dom](https://reacttraining.com/react-router/web/guides/quick-start)
-- [html-webpack-plugin](https://webpack.docschina.org/plugins/html-webpack-plugin/)
-- [mini-css-extract-plugin](https://webpack.docschina.org/plugins/mini-css-extract-plugin/)
-- [clean-webpack-plugin](https://github.com/johnagan/clean-webpack-plugin)
-- [optimization.splitChunks](https://webpack.docschina.org/plugins/split-chunks-plugin/#optimization-splitchunks)
-- [@babel/plugin-transform-runtime](https://babeljs.io/docs/en/babel-plugin-transform-runtime)
-- [webpack.DefinePlugin](https://webpack.docschina.org/plugins/define-plugin/#%E7%94%A8%E6%B3%95)
-- [uglifyjs-webpack-plugin](https://webpack.docschina.org/plugins/uglifyjs-webpack-plugin/#src/components/Sidebar/Sidebar.jsx)
-- [UglifyJS2/issues/659](https://github.com/mishoo/UglifyJS2/issues/659)
-- [为什么 webpack4 默认支持 ES6 语法的压缩？](https://juejin.im/post/5d706172f265da03ca118d28)
-- [terser-webpack-plugin](https://github.com/webpack-contrib/terser-webpack-plugin)
-- [terser](https://terser.org/)
-- [optimize-css-assets-webpack-plugin](https://github.com/NMFR/optimize-css-assets-webpack-plugin)
-- [postcss-safe-parser](https://github.com/postcss/postcss-safe-parser)
-- [cssnano](https://github.com/cssnano/cssnano)
-- [externals](https://webpack.docschina.org/configuration/externals/#src/components/Sidebar/Sidebar.jsx)
-- [cdnjs](https://cdnjs.com/)
-- [jsdelivr](https://www.jsdelivr.com/)
-- [CDN是什么？使用CDN有什么优势？](https://www.zhihu.com/question/36514327?rf=37353035)
-- [内容分发网络(Content Delivery Network)](https://zh.wikipedia.org/wiki/%E5%85%A7%E5%AE%B9%E5%82%B3%E9%81%9E%E7%B6%B2%E8%B7%AF)
-- [UNPKG](https://unpkg.com/)
