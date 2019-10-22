@@ -1,27 +1,13 @@
 import { hot } from 'react-hot-loader';
-import React, { useState } from 'react';
+import React from 'react';
 import ReactDom from 'react-dom';
-import './style/global.css';
-import styles from './index.scss';
+import Router from '@/router/index';
+import 'style/global.css';
 
-const App = hot(module)(() => {
-  const [title, setTitle] = useState('hello, world!');
-
-  const reversedTitle = () =>
-    setTitle(
-      title
-        .split('')
-        .reverse()
-        .join('')
-    );
-  return (
-    <div className={styles.app}>
-      <h1>{title}</h1>
-      <button type='button' onClick={reversedTitle}>
-        reversed title!
-      </button>
-    </div>
-  );
-});
+const App = hot(module)(() => (
+  <div className='app'>
+    <Router />
+  </div>
+));
 
 ReactDom.render(<App />, document.getElementById('root'));
