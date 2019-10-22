@@ -5,8 +5,8 @@
 ## 说明
 
 1. 项目主要探讨并记录 web 工程体系搭建主的要过程。（ 脱离框架提供的 cli 从基础开始构建一个工程上还算完整的 web 应用 ）
-2. 现代 Web 工程主要是三大框架 React、Vue、Angular。项目以 React 为基础。
-3. 为什么选择 React ？原因是工作中应用场景是 Vue ；选择什么，对本项目来说不是很重要，重要的是**论述好工程搭建过程**。
+2. 现代 Web 工程主要是三大框架 React、Vue、Angular。项目选择 React。
+3. 为什么选择 React ？原因是工作中应用的是 Vue ；选择什么，对本项目来说不是很重要，重要的是**论述好工程搭建过程**。
 4. 论述角度：
    - **版本管理(git)**
    - **npm包管理**
@@ -1874,7 +1874,7 @@ trim_trailing_whitespace = false
 - **工程目录**
 
   ```diff
-    └── starter
+  └── starter
   + ├── dist
   + │   └── chunks
   + │   │   ├── vendors~main.ae62441b.js
@@ -1888,11 +1888,11 @@ trim_trailing_whitespace = false
     │   ├── favicon.ico
     │   └── index.html
     ├── src
-    │   ├── index.js
-  + │   ├── index.scss
   + │   └── style
-  + │       ├── global.css
-  + │       └── reset.css
+  + │   |   ├── global.css
+  + │   |   └── reset.css
+    |   ├── index.js
+  + │   ├── index.scss
   + ├── postcss.config.js
     ├── webpack.config.js
     ├── package.json
@@ -1908,11 +1908,15 @@ trim_trailing_whitespace = false
 
 ### 16. 完善我们的应用
 
-待续...
+> **为了接下来更好的论述，我们来完成一个小需求。**
+
+![x](https://user-gold-cdn.xitu.io/2019/10/22/16df13960eb84498?w=930&h=660&f=png&s=35990)
+
+> 这块论述需要在斟酌
 
 ### 17. 引入路由
 
-> 前端单页应用，路由必不可少，目前主流框架都有配套路由插件，这里配合所选框架引入 [react-router-dom](https://reacttraining.com/react-router/web/guides/quick-start)
+  > 前端单页应用，路由必不可少，目前主流框架都有配套路由插件，这里配合所选框架引入 [react-router-dom](https://reacttraining.com/react-router/web/guides/quick-start)
 
 - **安装**
 
@@ -1933,93 +1937,197 @@ trim_trailing_whitespace = false
 
   <br />
 
-  ***路由配置 - src/router/index.js***
+  - **路由配置 - src/router/index.js**
 
-  ```jsx
-  import React from 'react';
-  import {
-    BrowserRouter,
-    Route,
-    Switch,
-    Redirect
-  } from 'react-router-dom';
-  import routes from './list';
+    ```jsx
+    import React from 'react';
+    import {
+      BrowserRouter,
+      Route,
+      Switch,
+      Redirect
+    } from 'react-router-dom';
+    import routes from './list';
 
-  function RouterView(route) {
-    return (
-      <Route
-        path={route.path}
-        render={(props) => {
-          if (route.redirect) {
-            return <Redirect to={route.redirect} />;
-          }
-          return (
-            <route.component
-              {...props}
-              render={() => (
-                <Switch>
-                  {route.routes.map((children) => (
-                    <RouterView key={children.path} {...children} />
-                  ))}
-                </Switch>
-              )}
-            />
-          );
-        }}
-      />
-    );
-  }
-
-  export default function Router() {
-    return (
-      <BrowserRouter>
-        <Switch>
-          {routes.map((route) => (
-            <RouterView key={route.path} {...route} />
-          ))}
-        </Switch>
-      </BrowserRouter>
-    );
-  }
-  ```
-
-  ***路由表 - src/router/list.js***
-
-  ```js
-  import BottomTabNavigator from '../components/BottomTabNavigator/BottomTabNavigator';
-  import Github from '../views/Github/Github';
-  import Setting from '../views/Setting/Setting';
-  import NotFound from '../views/NotFound/NotFound';
-
-  const routes = [
-    {
-      path: '/',
-      exact: true,
-      redirect: '/dashboard/github'
-    },
-    {
-      path: '/dashboard',
-      component: BottomTabNavigator,
-      routes: [
-        {
-          path: '/dashboard/github',
-          component: Github
-        },
-        {
-          path: '/dashboard/setting',
-          component: Setting
-        }
-      ]
-    },
-    {
-      path: '*',
-      component: NotFound
+    function RouterView(route) {
+      return (
+        <Route
+          path={route.path}
+          render={(props) => {
+            if (route.redirect) {
+              return <Redirect to={route.redirect} />;
+            }
+            return (
+              <route.component
+                {...props}
+                render={() => (
+                  <Switch>
+                    {route.routes.map((children) => (
+                      <RouterView key={children.path} {...children} />
+                    ))}
+                  </Switch>
+                )}
+              />
+            );
+          }}
+        />
+      );
     }
-  ];
 
-  export default routes;
+    export default function Router() {
+      return (
+        <BrowserRouter>
+          <Switch>
+            {routes.map((route) => (
+              <RouterView key={route.path} {...route} />
+            ))}
+          </Switch>
+        </BrowserRouter>
+      );
+    }
+    ```
+
+  - **路由表 - src/router/list.js**
+
+    ```js
+    import BottomTabNavigator from '../components/BottomTabNavigator/BottomTabNavigator';
+    import NotFound from '../components/NotFound/NotFound';
+    import Github from '../views/Github/Github';
+    import Setting from '../views/Setting/Setting';
+
+    const routes = [
+      {
+        path: '/',
+        exact: true,
+        redirect: '/dashboard/github'
+      },
+      {
+        path: '/dashboard',
+        component: BottomTabNavigator,
+        routes: [
+          {
+            path: '/dashboard/github',
+            component: Github
+          },
+          {
+            path: '/dashboard/setting',
+            component: Setting
+          },
+        ]
+      },
+      {
+        path: '*',
+        component: NotFound
+      }
+    ];
+
+    export default routes;
+    ```
+
+    > **根据上述简单的草图，我们编写了上述路由表**
+
+- **根据我们的路由表，编写的相关页面, 并调整我们的工程目录，以下展示的是调整之后的工程目录**
+
+    ```diff
+    └── starter
+      ├── dist
+      │   └── chunks
+      │   │   ├── vendors~main.ae62441b.js
+      │   │   └── vendors~main.ae62441b.js.LICENSE
+      |   ├── css
+      │   │   └── main.f9cee851.css
+      │   ├── index.html
+      │   └── main.2130b172.js
+      ├── node_modules
+      ├── public
+      │   ├── favicon.ico
+      │   └── index.html
+      ├── src
+    + │   ├── assets
+    + │   │   ├── font
+    + │   │   │   ├── iconfont.css
+    + │   │   │   ├── iconfont.eot
+    + │   │   │   ├── iconfont.svg
+    + │   │   │   ├── iconfont.ttf
+    + │   │   │   └── iconfont.woff
+    + │   │   ├── images
+    + │   │   │   ├── logo.png
+    + │   │   │   └── not-found.png
+    + │   │   └── svg
+    + │   │       └── logo.svg
+    + │   ├── components
+    + │   │   ├── BottomTabNavigator
+    + │   │   │   ├── BottomTabNavigator.js
+    + │   │   │   ├── BottomTabNavigator.scss
+    + │   │   │   └── index.zh-CN.md
+    + │   │   ├── Loading
+    + │   │   │   ├── Loading.js
+    + │   │   │   ├── Loading.scss
+    + │   │   │   └── index.zh-CN.md
+    + │   │   ├── NotFound
+    + │   │   │   ├── NotFound.js
+    + │   │   │   ├── NotFound.scss
+    + │   │   │   └── index.zh-CN.md
+    + │   │   ├── RepositoriesCard
+    + │   │   │   ├── RepositoriesCard.js
+    + │   │   │   └── RepositoriesCard.scss
+    + │   │   └── README.md
+    + │   ├── router
+    + │   |   ├── list.js
+    + │   |   └── index.js
+      │   ├── style
+      │   |   ├── global.css
+      │   |   ├── reset.css
+    + │   │   └── variable.scss
+    + |   ├── views
+    + │   │   ├── Github
+    + │   |   |   ├── Github.js
+    + │   |   |   └── Github.scss
+    + |   |   └── Setting
+    + │   |   |   ├── Setting.js
+    + │   |   |   └── Setting.scss
+      │   ├── index.js
+      │   ├── index.scss
+      ├── postcss.config.js
+      ├── webpack.config.js
+      ├── package.json
+      ├── README.md
+      ├── LICENSE
+      └── yarn.lock
   ```
 
+  >
+
+  **重要说明：**
+
+  - **components 相关说明**
+
+    **a. 在这个目录下我们存放的是 UI 组件， 它遵循的几个原则如下：**
+
+      1. 最基础的组件形式，如：按钮、标签。
+      2. 无状态
+      3. 纯静态展示作用
+      4. 组成的基本结构（props + render）
+      5. 不需要依赖生命周期
+      6. 单一职责，多处复用。
+
+    **b. 添加的组件**
+
+      1. [BottomTabNavigator](https://github.com/cllemon/starter)
+      2. [RepositoriesCard](https://github.com/cllemon/starter)
+      3. [Loading](https://github.com/cllemon/starter)
+      4. [NotFound](https://github.com/cllemon/starter)
+
+      > 这里仅仅做 DEMO 演示；当然你可以自己去实现，这不是重点。
+
+  - **assets 相关说明**
+
+    **a. 字体图标相较传统解决方案可有效控制前端包体积**
+
+      1. 在 BottomTabNavigator 组件中应用
+      2. 字体图标可在 [阿里 iconfont 定制](https://www.iconfont.cn/)
+
+    **b. 由于我们添加了相关图标和图片文件，我们。。。**
 
 ## 参阅
 
