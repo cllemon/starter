@@ -9,7 +9,7 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const SafePostCssParser = require('postcss-safe-parser');
 const IS_PROD = process.env.NODE_ENV === 'production';
 
-module.exports = function () {
+module.exports = function() {
   const baseConfig = {
     mode: IS_PROD ? 'production' : 'development',
 
@@ -40,6 +40,21 @@ module.exports = function () {
 
     module: {
       rules: [
+        {
+          test: /\.(js|jsx)$/,
+          exclude: /node_modules/,
+          include: path.resolve(__dirname, 'src'),
+          enforce: 'pre',
+          use: [
+            {
+              loader: 'eslint-loader',
+              options: {
+                cache: false,
+                fix: true
+              }
+            }
+          ]
+        },
         {
           test: /\.(js|jsx)$/,
           exclude: /node_modules/,
@@ -164,17 +179,19 @@ module.exports = function () {
         template: path.resolve(__dirname, 'public/index.html'),
         minify: IS_PROD
           ? {
-            removeComments: true,
-            collapseWhitespace: true,
-            removeAttributeQuotes: true,
-            collapseBooleanAttributes: true,
-            removeScriptTypeAttributes: true
-          }
+              removeComments: true,
+              collapseWhitespace: true,
+              removeAttributeQuotes: true,
+              collapseBooleanAttributes: true,
+              removeScriptTypeAttributes: true
+            }
           : {}
       }),
       new MiniCssExtractPlugin({
         filename: IS_PROD ? 'css/[name].[contenthash:8].css' : 'css/[name].css',
-        chunkFilename: IS_PROD ? 'css/[name].[contenthash:8].css' : 'css/[name].css'
+        chunkFilename: IS_PROD
+          ? 'css/[name].[contenthash:8].css'
+          : 'css/[name].css'
       }),
       new CleanWebpackPlugin(),
       new webpack.DefinePlugin({

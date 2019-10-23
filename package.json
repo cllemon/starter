@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "cross-env NODE_ENV=development webpack-dev-server --color --progress",
-    "build": "cross-env NODE_ENV=production webpack --color --progress"
+    "build": "cross-env NODE_ENV=production webpack --color --progress",
+    "lint:script": "eslint --ext '.js,.jsx' src",
+    "lint-fix:script": "npm run lint:script -- --fix"
   },
   "repository": {
     "type": "git",
@@ -29,10 +31,18 @@
     "@babel/preset-env": "^7.6.3",
     "@babel/preset-react": "^7.6.3",
     "autoprefixer": "^9.6.5",
+    "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
     "clean-webpack-plugin": "^3.0.0",
     "cross-env": "^6.0.3",
     "css-loader": "^3.2.0",
+    "eslint": "^6.5.1",
+    "eslint-import-resolver-webpack": "^0.11.1",
+    "eslint-loader": "^3.0.2",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.16.0",
+    "eslint-plugin-react-hooks": "^2.2.0",
     "file-loader": "^4.2.0",
     "html-webpack-plugin": "^3.2.0",
     "mini-css-extract-plugin": "^0.8.0",
