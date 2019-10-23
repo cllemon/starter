@@ -2453,7 +2453,25 @@ trim_trailing_whitespace = false
 
 **[⬆ back to top](#)**
 
-### 19. **代码风格管理**
+### 19. **编码规范**
+
+- **说明**
+
+  - **意义：** 当目前为止，我们项目的代码量越来越多了，你写的代码可能会存在一些潜在问题（这很难避免）；再一个，一个大型项目往往是一个团队在维护，团队成员代码风格却不尽相同。基于此，我们需要一个工具去解决这些痛点。
+
+  - [**eslint:**](https://github.com/eslint/eslint) 常用于检查常见的 JavaScript 代码错误，也可以进行代码风格检查。
+
+  - [**stylelint:**](https://github.com/stylelint/stylelint) 强大的现代化 linter，可帮助您避免错误并在样式中强制执行约定。
+
+  - [**prettier:**](https://github.com/prettier/prettier) 代码格式化工具，它通过解析代码并使用自己的规则重新打印代码，从而实现一致的样式，并在必要时包装代码。
+
+  > 论述完编码规范的重要性，及工具链之后，我们看看如何在项目中应用。
+
+- **安装**
+
+  ```sh
+  $ 待续
+  ```
 
 **[⬆ back to top](#)**
 
@@ -2536,3 +2554,6 @@ trim_trailing_whitespace = false
 - [模块解析](https://webpack.docschina.org/configuration/resolve/#resolve-alias)
 - [url-loader](https://github.com/webpack-contrib/url-loader)
 - [@loadable/component](https://github.com/smooth-code/loadable-components)
+- [eslint](https://github.com/eslint/eslint)
+- [stylelint](https://github.com/stylelint/stylelint)
+- [prettier](https://github.com/prettier/prettier)

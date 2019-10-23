@@ -174,7 +174,7 @@ module.exports = function () {
       }),
       new MiniCssExtractPlugin({
         filename: IS_PROD ? 'css/[name].[contenthash:8].css' : 'css/[name].css',
-        chunkFilename: IS_PROD ? 'css/[id].[contenthash:8].css' : 'css/[id].css'
+        chunkFilename: IS_PROD ? 'css/[name].[contenthash:8].css' : 'css/[name].css'
       }),
       new CleanWebpackPlugin(),
       new webpack.DefinePlugin({
