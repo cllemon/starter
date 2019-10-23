@@ -1,5 +1,11 @@
-import Github from '@/views/Github/Github';
-import Setting from '@/views/Setting/Setting';
+
+import React from 'react';
+import loadable from '@loadable/component';
+
+const Github = import(/* webpackChunkName: "github" */ '@/views/Github/Github.js');
+const Setting = import(/* webpackChunkName: "setting" */ '@/views/Setting/Setting.js');
+
+const AsyncComponent = (loader) => loadable(loader, { fallback: <h3>Loading...</h3> });
 
 const routes = [
   {
@@ -9,11 +15,11 @@ const routes = [
   },
   {
     path: '/github',
-    component: Github
+    component: AsyncComponent(() => Github)
   },
   {
     path: '/setting',
-    component: Setting
+    component: AsyncComponent(() => Setting)
   }
 ];
 

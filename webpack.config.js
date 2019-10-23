@@ -9,7 +9,7 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const SafePostCssParser = require('postcss-safe-parser');
 const IS_PROD = process.env.NODE_ENV === 'production';
 
-module.exports = function() {
+module.exports = function () {
   const baseConfig = {
     mode: IS_PROD ? 'production' : 'development',
 
@@ -164,12 +164,12 @@ module.exports = function() {
         template: path.resolve(__dirname, 'public/index.html'),
         minify: IS_PROD
           ? {
-              removeComments: true,
-              collapseWhitespace: true,
-              removeAttributeQuotes: true,
-              collapseBooleanAttributes: true,
-              removeScriptTypeAttributes: true
-            }
+            removeComments: true,
+            collapseWhitespace: true,
+            removeAttributeQuotes: true,
+            collapseBooleanAttributes: true,
+            removeScriptTypeAttributes: true
+          }
           : {}
       }),
       new MiniCssExtractPlugin({

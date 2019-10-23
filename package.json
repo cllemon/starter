@@ -51,6 +51,7 @@
   },
   "dependencies": {
     "@hot-loader/react-dom": "^16.10.2",
+    "@loadable/component": "^5.10.3",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-hot-loader": "^4.12.15",
