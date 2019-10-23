@@ -1906,17 +1906,11 @@ trim_trailing_whitespace = false
   1. 至此整个构建过程和构建过程中所做的优化点都已经大致论述完毕，当然不足之处还有一些。📚
   2. 离完整的工程还有很多工作要做，继续吧！🔥👇🔥
 
-### 16. 完善我们的应用
-
-> **为了接下来更好的论述，我们来完成一个小需求。**
-
-![x](https://user-gold-cdn.xitu.io/2019/10/22/16df13960eb84498?w=930&h=660&f=png&s=35990)
-
-> 这块论述需要在斟酌
+**[⬆ back to top](#)**
 
 ### 16. 引入路由
 
-  > 前端单页应用，路由必不可少，目前主流框架都有配套路由插件，这里配合所选框架引入 [react-router-dom](https://reacttraining.com/react-router/web/guides/quick-start)
+ > 前端单页应用，路由必不可少，目前主流框架都有配套路由插件，这里配合所选框架引入 [react-router-dom](https://reacttraining.com/react-router/web/guides/quick-start)
 
 - **安装**
 
@@ -2015,6 +2009,8 @@ trim_trailing_whitespace = false
     ```
 
     > 这里的命名你可以随意创建🙄
+
+  **[⬆ back to top](#)**
 
 - **新建 Setting、GitHub 页面，并编写**
 
@@ -2166,7 +2162,11 @@ trim_trailing_whitespace = false
   1. **( 我们在页面内引入了图片，随着项目的增长后续可能会引入字体图标、音频等文件 ) 这里我们利用 webpack 帮我们统一管理这些资源**
   2. **随着项目深入，目录结构也必将越来越复杂，我们利用 `webpack` - `resolve.alias`, 创建 import 或 require 的别名，来确保模块引入变得更简单。**
 
+  <br>
+
   > 做点改进吧️ ⚓️
+
+  **[⬆ back to top](#)**
 
 ### 17. [管理资源](https://webpack.docschina.org/guides/asset-management/#%E5%8A%A0%E8%BD%BD-images-%E5%9B%BE%E5%83%8F)、优化[模块解析](https://webpack.docschina.org/configuration/resolve/#resolve-alias)
 
@@ -2211,6 +2211,8 @@ trim_trailing_whitespace = false
   ```
 
   ```diff
+  <!-- starter/webpack.config.js -->
+
     module: {
       rules: [
         ...
@@ -2281,13 +2283,199 @@ trim_trailing_whitespace = false
     }
   ```
 
-  > 这里我们虽然没有引入 `svg`、字体图标文件、音频文件，但是这里我们索性把其配置添加。
+  > 这里我们虽然没有引入 `svg`、字体图标文件、音频文件，但是这里为了方便后续深入，我们索性把其配置添加。
 
-- **好了，我们启动我们的项目**
+- **好了，启动我们的项目。Try it!**
 
   ```sh
   $ yarn server
   ```
+
+  ![x](https://user-gold-cdn.xitu.io/2019/10/23/16df6a85a8a00ef9?w=924&h=358&f=png&s=28652)
+
+- **打包**
+
+  ```diff
+    $ yarn build
+
+    # 结果
+
+    $ cross-env NODE_ENV=production webpack --color --progress
+    Hash: fb9c0cc487e7845fd915
+    Version: webpack 4.41.2
+    Time: 3533ms
+    Built at: 2019-10-23 11:42:44
+
+                                      Asset       Size              Chunks               Chunk Names
+            chunks/vendors~main.64d1203b.js    160 KiB       1  [emitted] [immutable]    vendors~main
+    chunks/vendors~main.64d1203b.js.LICENSE    1.01 KiB         [emitted]
+  !                   css/main.b7d00a9e.css    1.19 KiB      0  [emitted] [immutable]        main
+                  images/logo.581fa1d8.png     8.38 KiB         [emitted]
+                                index.html     667 bytes        [emitted]
+  !                       main.cfa18e59.js     3.95 KiB      0  [emitted] [immutable]        main
+
+    Entrypoint main = chunks/vendors~main.64d1203b.js css/main.b7d00a9e.css main.cfa18e59.js
+  ```
+
+- **问题与待优化点**
+
+  1. **随着项目复杂度递增，当打包构建应用时，JavaScript 包会变得非常大，影响页面加载。如果我们能把不同路由对应的组件分割成不同的代码块，然后当路由被访问的时候才加载对应组件，这样就更加高效了。**
+
+**[⬆ back to top](#)**
+
+### 18. 路由懒加载 [@loadable/component](https://github.com/smooth-code/loadable-components)
+
+> 注：使用该插件对应用进行代码分割能够帮助你“懒加载”当前用户所需要的内容，能够显著地提高你的应用性能。尽管并没有减少应用整体的代码体积，但你可以避免加载用户永远不需要的代码，并在初始加载的时候减少所需加载的代码量。
+
+- **安装**
+
+  ```sh
+  # 当然你也可以选择，React.lazy 和 Suspense，但他们还不支持服务端渲染。这里直接选择功能更加强大的 @loadable/component
+
+  $ yarn add @loadable/component
+  ```
+
+- **修改路由表**
+
+  ```diff
+  ! <!-- src/router/list -->
+
+  - import Github from '@/views/Github/Github';
+  - import Setting from '@/views/Setting/Setting';
+  + import React from 'react';
+  + import loadable from '@loadable/component';
+
+  + const Github = import(/* webpackChunkName: "github" */ '@/views/Github/Github.js');
+  + const Setting = import/* webpackChunkName: "setting" */ ('@/views/Setting/Setting.js');
+
+  + const AsyncComponent = (loader) => loadable(loader, { fallback: <h3>Loading...</h3> });
+
+    const routes = [
+      {
+        path: '/',
+        exact: true,
+        redirect: '/github'
+      },
+      {
+        path: '/github',
+  -     component: Github
+  +     component: AsyncComponent(() => Github)
+      },
+      {
+        path: '/setting',
+  -     component: Setting
+  +     component: AsyncComponent(() => Setting)
+      }
+    ];
+
+    export default routes;
+  ```
+
+- **打包我们的应用，看一看代码分割结果**
+
+  ```diff
+    $ yarn build
+
+    # 结果
+
+    $ cross-env NODE_ENV=production webpack --color --progress
+    Hash: b93be70da668f4dff43b
+    Version: webpack 4.41.2
+    Time: 6077ms
+    Built at: 2019-10-23 16:21:08
+
+                                      Asset        Size                  Chunks            Chunk Names
+  !               chunks/github.45dc6c0d.js    634 bytes       0  [emitted] [immutable]      github
+  !             chunks/setting.316d765f.js     637 bytes       2  [emitted] [immutable]      setting
+            chunks/vendors~main.a51021eb.js    164 KiB         3  [emitted] [immutable]     vendors~main
+    chunks/vendors~main.a51021eb.js.LICENSE    1.01 KiB           [emitted]
+  !                     css/0.8de607a6.css     191 bytes       0  [emitted] [immutable]       github
+  !                     css/2.1a0bfbdd.css     195 bytes       2  [emitted] [immutable]       setting
+                      css/main.c1fb052e.css    830 bytes       1  [emitted] [immutable]        main
+                  images/logo.581fa1d8.png     8.38 KiB           [emitted]
+                                index.html     667 bytes          [emitted]
+                          main.02bdd0e7.js     4.96 KiB        1  [emitted] [immutable]        main
+
+    Entrypoint main = chunks/vendors~main.a51021eb.js css/main.c1fb052e.css main.02bdd0e7.js
+  ```
+
+- **工程目录**
+
+  ```diff
+  └── starter
+  + ├── dist
+  + │   └── chunks
+  + │   │   ├── github.45dc6c0d.js
+  + │   │   ├── setting.316d765f.js
+  + │   │   ├── vendors~main.a51021eb.js
+  + │   │   └── vendors~main.a51021eb.js.LICENSE
+  +     ├── css
+  + │   │   ├── 0.8de607a6.css
+  + │   │   ├── 2.1a0bfbdd.css
+  + │   │   └── main.c1fb052e.css
+  + │   ├── images
+  + │   │   └── logo.581fa1d8.png
+    │   ├── index.html
+  + │   └── main.02bdd0e7.js
+    ├── node_modules
+    ├── public
+    │   ├── favicon.ico
+    │   └── index.html
+    ├── src
+  + │   ├── assets
+  + │   │   └── images
+  + │   │       └── logo.png
+  + │   ├── router
+  + │   │   ├── index.js
+  + │   │   └── list.js
+    │   ├── style
+    │   |   ├── global.css
+    │   |   └── reset.css
+  + |   ├── views
+  + │   |   ├── Github
+  + │   |   │   ├── Github.js
+  + │   |   │   └── Github.scss
+  + │   |   └── Setting
+  + │   |       ├── Setting.js
+  + │   |       └── Setting.scss
+  - │   ├── index.scss
+    |   └──  index.js
+    ├── postcss.config.js
+    ├── webpack.config.js
+    ├── package.json
+    ├── README.md
+    ├── LICENSE
+    └── yarn.lock
+
+  ```
+
+  **到此，我们已经把路由功能添加，继续后续工作吧！🚘**
+
+**[⬆ back to top](#)**
+
+### 19. **代码风格管理**
+
+**[⬆ back to top](#)**
+
+### 20. 完善应用
+
+> **为了接下来更好的论述，我们来完成一个小需求。**
+
+![x](https://user-gold-cdn.xitu.io/2019/10/22/16df13960eb84498?w=930&h=660&f=png&s=35990)
+
+**[⬆ back to top](#)**
+
+### 21. 前后端交互
+
+**[⬆ back to top](#)**
+
+### 22. 数据自造 MOCK
+
+**[⬆ back to top](#)**
+
+### 23. 单元测试 jest
+
+**[⬆ back to top](#)**
 
 ## 参阅
 
@@ -2347,108 +2535,4 @@ trim_trailing_whitespace = false
 - [管理资源](https://webpack.docschina.org/guides/asset-management/#%E5%8A%A0%E8%BD%BD-images-%E5%9B%BE%E5%83%8F)
 - [模块解析](https://webpack.docschina.org/configuration/resolve/#resolve-alias)
 - [url-loader](https://github.com/webpack-contrib/url-loader)
-
-> **根据上述简单的草图，我们编写了上述路由表**
-
-- **根据我们的路由表，编写的相关页面, 并调整我们的工程目录，以下展示的是调整之后的工程目录**
-
-    ```diff
-    └── starter
-      ├── dist
-      │   └── chunks
-      │   │   ├── vendors~main.ae62441b.js
-      │   │   └── vendors~main.ae62441b.js.LICENSE
-      |   ├── css
-      │   │   └── main.f9cee851.css
-      │   ├── index.html
-      │   └── main.2130b172.js
-      ├── node_modules
-      ├── public
-      │   ├── favicon.ico
-      │   └── index.html
-      ├── src
-    + │   ├── assets
-    + │   │   ├── font
-    + │   │   │   ├── iconfont.css
-    + │   │   │   ├── iconfont.eot
-    + │   │   │   ├── iconfont.svg
-    + │   │   │   ├── iconfont.ttf
-    + │   │   │   └── iconfont.woff
-    + │   │   ├── images
-    + │   │   │   ├── logo.png
-    + │   │   │   └── not-found.png
-    + │   │   └── svg
-    + │   │       └── logo.svg
-    + │   ├── components
-    + │   │   ├── BottomTabNavigator
-    + │   │   │   ├── BottomTabNavigator.js
-    + │   │   │   ├── BottomTabNavigator.scss
-    + │   │   │   └── index.zh-CN.md
-    + │   │   ├── Loading
-    + │   │   │   ├── Loading.js
-    + │   │   │   ├── Loading.scss
-    + │   │   │   └── index.zh-CN.md
-    + │   │   ├── NotFound
-    + │   │   │   ├── NotFound.js
-    + │   │   │   ├── NotFound.scss
-    + │   │   │   └── index.zh-CN.md
-    + │   │   ├── RepositoriesCard
-    + │   │   │   ├── RepositoriesCard.js
-    + │   │   │   └── RepositoriesCard.scss
-    + │   │   └── README.md
-    + │   ├── router
-    + │   |   ├── list.js
-    + │   |   └── index.js
-      │   ├── style
-      │   |   ├── global.css
-      │   |   ├── reset.css
-    + │   │   └── variable.scss
-    + |   ├── views
-    + │   │   ├── Github
-    + │   |   |   ├── Github.js
-    + │   |   |   └── Github.scss
-    + |   |   └── Setting
-    + │   |   |   ├── Setting.js
-    + │   |   |   └── Setting.scss
-      │   ├── index.js
-      │   ├── index.scss
-      ├── postcss.config.js
-      ├── webpack.config.js
-      ├── package.json
-      ├── README.md
-      ├── LICENSE
-      └── yarn.lock
-  ```
-
-  >
-
-  **重要说明：**
-
-  - **components 相关说明**
-
-    **a. 在这个目录下我们存放的是 UI 组件， 它遵循的几个原则如下：**
-
-      1. 最基础的组件形式，如：按钮、标签。
-      2. 无状态
-      3. 纯静态展示作用
-      4. 组成的基本结构（props + render）
-      5. 不需要依赖生命周期
-      6. 单一职责，多处复用。
-
-    **b. 添加的组件**
-
-      1. [BottomTabNavigator](https://github.com/cllemon/starter)
-      2. [RepositoriesCard](https://github.com/cllemon/starter)
-      3. [Loading](https://github.com/cllemon/starter)
-      4. [NotFound](https://github.com/cllemon/starter)
-
-      > 这里仅仅做 DEMO 演示；当然你可以自己去实现，这不是重点。
-
-  - **assets 相关说明**
-
-    **a. 字体图标相较传统解决方案可有效控制前端包体积**
-
-      1. 在 BottomTabNavigator 组件中应用
-      2. 字体图标可在 [阿里 iconfont 定制](https://www.iconfont.cn/)
-
-    **b. 由于我们添加了相关图标和图片文件，我们。。。**
+- [@loadable/component](https://github.com/smooth-code/loadable-components)
