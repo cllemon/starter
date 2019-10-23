@@ -869,7 +869,6 @@ trim_trailing_whitespace = false
 
 **[⬆ back to top](#)**
 
-
 ### 13. 引入 CSS 与 [Sass](http://sass.bootcss.com/docs/sass-reference/) 样式文件处理
 
 > 样式是前端组件重要组成部分，而 Sass 让 CSS 语言更强大、优雅；有助于保持大型样式表结构良好。
@@ -2455,9 +2454,9 @@ trim_trailing_whitespace = false
 
 ### 19. **编码规范**
 
-- **说明**
+> **到目前为止，我们项目的代码量越来越多了，写的代码可能还会存在一些潜在问题（这很难避免）；再一个，一个大型项目往往是一个团队在维护，团队成员代码风格却不尽相同。基于此，我们需要一个工具去解决这些痛点。**
 
-  - **意义：** 当目前为止，我们项目的代码量越来越多了，你写的代码可能会存在一些潜在问题（这很难避免）；再一个，一个大型项目往往是一个团队在维护，团队成员代码风格却不尽相同。基于此，我们需要一个工具去解决这些痛点。
+- **工具**
 
   - [**eslint:**](https://github.com/eslint/eslint) 常用于检查常见的 JavaScript 代码错误，也可以进行代码风格检查。
 
@@ -2467,11 +2466,145 @@ trim_trailing_whitespace = false
 
   > 论述完编码规范的重要性，及工具链之后，我们看看如何在项目中应用。
 
-- **安装**
+- **配置 [eslint](https://github.com/eslint/eslint)**
+
+  **安装**
 
   ```sh
-  $ 待续
+  $ yarn add -D eslint                          # eslint
+  $ yarn add -D babel-eslint                    # 一个对 Babel 解析器的包装，使其能够与 ESLint 兼容
+  $ yarn add -D eslint-plugin-react             # 检测 react 代码
+  $ yarn add -D eslint-plugin-react-hooks       # 用于检测 hook 规则
+  $ yarn add -D eslint-plugin-jsx-a11y          # 用于检测 jsx 规范
+  $ yarn add -D eslint-plugin-import            # ESLint 插件，带有有助于验证正确导入的规则。
+  $ yarn add -D eslint-import-resolver-webpack  # 用于 eslint-plugin-import的 Webpack-literate 模块解析插件。
   ```
+
+  **新建 eslint 配置文件**
+
+  ```sh
+  $ touch .eslintrc     # eslint 配置文件
+  $ touch .eslintignore # eslint 忽略检测配置文件
+  ```
+
+  ```json
+  <!-- starter/.eslintrc -->
+
+    {
+      "root": true,
+      "env": {
+        "es6": true,
+        "browser": true,
+      },
+      "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:jsx-a11y/recommended"],
+      "parser": "babel-eslint",
+      "plugins": ["react", "jsx-a11y", "react-hooks", "import"],
+      "rules": {
+        "semi": ["error", "always"],
+        "quotes": ["error", "single"],
+        "jsx-quotes": ["error", "prefer-single"],
+        "comma-dangle": ["error", "never"],
+        "camelcase": [0, { "properties": "never" }],
+        "no-console": [2, { "allow": ["warn", "error"] }],
+        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+        "react/jsx-props-no-spreading": "off",
+        "jsx-a11y/click-events-have-key-events": "off",
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "warn",
+        "react/no-unused-prop-types": "off"
+      },
+      "settings": {
+        "import/resolver": "webpack"
+      },
+      "globals": {
+        "process": true,
+        "module": true
+      }
+    }
+
+  <!-- starter/.eslintignore -->
+
+    node_modules
+    dist
+  ```
+
+  **配置说明**
+
+    1. [`"eslint:recommended"`](https://cn.eslint.org/docs/rules/) 启用推荐的规则
+    2. [`"plugin:react/recommended"`](https://github.com/yannickcr/eslint-plugin-react/) 该插件会导出建议的配置，以强制实施 React 的良好做法。
+    3. [`"babel-eslint"`](https://github.com/babel/babel-eslint) 一个对 Babel 解析器的包装，使其能够与 ESLint 兼容
+    4. rules: 自定义规则，去覆盖扩展配置。
+    5. [`eslint-plugin-import`](https://github.com/benmosher/eslint-plugin-import) 该插件旨在支持ES2015 +（ES6 +）导入/导出语法的检查，并防止文件路径和导入名称拼写错误的问题。
+    6. `"import/resolver": "webpack"` ：解决 webpack 别名配置导致的 `eslint-plugin-import` 报错。
+    7. 此配置是一份交简单的配置 详细配置说明请参考 [Configuring ESLint](https://cn.eslint.org/docs/user-guide/configuring)
+
+  > **注：eslint 配置还是根据团队内部去协定出一套行之有效的规范。**
+
+  **修改 package.json 新建快捷命令**
+
+  ```diff
+  <!-- starter/package.json -->
+
+       "scripts": {
+         "test": "echo \"Error: no test specified\" && exit 1",
+         "server": "cross-env NODE_ENV=development webpack-dev-server --color --progress",
+         "build": "cross-env NODE_ENV=production webpack --color --progress",
+  +      "lint:script": "eslint --ext '.js,.jsx' src",
+  +      "lint-fix:script": "npm run lint:script -- --fix"
+       },
+  ```
+
+  **执行命令，查看是否存在不符合规则之处**
+
+  ```sh
+  $ yarn lint:script     # 执行 lint
+  $ yarn lint-fix:script # 执行 lint 并自动修复
+
+  # 如果遇到错误，根据规则修复即可
+  ```
+
+  **在每次转译js、jsx文件之前，执行 lint 格式化代码**
+
+  ```sh
+  # 安装
+
+  $ yarn add -D eslint-loader                   # eslint loader (for webpack)
+  ```
+
+  ```diff
+  // 修改 webpack.config.js 配置
+
+    ...
+
+      module: {
+        rules: [
+  +       {
+  +         test: /\.(js|jsx)$/,
+  +         exclude: /node_modules/,
+  +         include: path.resolve(__dirname, 'src'),
+  +         enforce: 'pre',
+  +         use: [
+  +           {
+  +             loader: 'eslint-loader',
+  +             options: {
+  +               cache: false,
+  +               fix: true
+  +             }
+  +           }
+  +         ]
+  +       },
+          {
+            test: /\.(js|jsx)$/,
+            exclude: /node_modules/,
+            loader: 'babel-loader'
+          },
+          ...
+        ]
+      }
+
+    ...
+  ```
+
 
 **[⬆ back to top](#)**
 
@@ -2557,3 +2690,11 @@ trim_trailing_whitespace = false
 - [eslint](https://github.com/eslint/eslint)
 - [stylelint](https://github.com/stylelint/stylelint)
 - [prettier](https://github.com/prettier/prettier)
+- [eslint-loader](https://github.com/webpack-contrib/eslint-loader)
+- [babel-eslint](https://github.com/babel/babel-eslint)
+- [airbnb/javascript](https://github.com/airbnb/javascript)
+- [eslint-plugin-react](https://github.com/yannickcr/eslint-plugin-react)
+- [eslint-plugin-react-hooks](https://www.npmjs.com/package/eslint-plugin-react-hooks)
+- [eslint-plugin-jsx-a11y](https://www.npmjs.com/package/eslint-plugin-jsx-a11y)
+- [eslint-plugin-import](https://github.com/benmosher/eslint-plugin-import)
+- [eslint-import-resolver-webpack](https://www.npmjs.com/package/eslint-import-resolver-webpack)
