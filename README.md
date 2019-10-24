@@ -2869,14 +2869,15 @@ trim_trailing_whitespace = false
 
   <br>
 
-#### **pre-commit**
+#### 配置 [Husky](https://github.com/typicode/husky)
 
-  > Git钩子脚本对于在提交代码审查之前识别简单问题很有用。我们在每次提交时都运行钩子，以自动指出代码中的问题，例如缺少分号，尾随空白和调试语句。通过在代码审阅之前指出这些问题，代码审阅者可以专注于更改的体系结构，而不会因为琐碎的风格问题而浪费时间。
+  > Git钩子脚本对于在提交代码审查之前识别简单问题很有用。我们在每次提交时都运行钩子，以自动指出代码中的问题，例如缺少分号，尾随空白和调试语句。通过在代码审阅之前指出这些问题，一来，可以确保没有错误进入存储库；二来，代码审阅者可以专注于更改的体系结构，而不会因为琐碎的风格问题而浪费时间。
 
 - **安装**
 
   ```sh
-  $ yarn add -D pre-commit # A framework for managing and maintaining multi-language pre-commit hooks.
+  $ yarn add -D husky # 🐶 Git hooks made easy
+  $ yarn add -D lint-staged # 对暂存的 git 文件运行 linters，不要让💩进入您的代码库！
   ```
 
 - **配置**
@@ -2897,22 +2898,55 @@ trim_trailing_whitespace = false
         "lint-fix:style": " npm run lint:style -- --fix",
         "prettier": "prettier --check --write './src/**/*.js' './src/**/*.jsx'"
       },
-  +   "pre-commit": [
-  +     "prettier",
-  +     "lint-fix"
-  +   ],
+  +   "husky": {
+  +     "hooks": {
+  +       "pre-commit": "lint-staged"
+  +     }
+  +   },
+  +   "lint-staged": {
+  +     "src/**/*.{scss, css}": "npm run lint-fix:style",
+  +     "src/**/*.{js,jsx}": [
+  +       "npm run prettier",
+  +       "npm run lint-fix:script",
+  +       "git add"
+  +     ]
+  +   }
     }
   ```
 
-  > 测试一下吧！ **Try it!**  🎉🎉🎊🎊
-
-  **到此编码规范的内容基本陈述完毕，说的东西有限、具体如何配置取决于你或你的团队要求！** **Go 🚠**
+  >  **推个代码测试一下吧！ Try it!**  🎉🎉🎊🎊
 
   <br>
 
   **[⬆ back to top](#)**
 
   <br>
+
+- **题外话：commit changelog 规范**
+
+  ```sh
+  # feat：     添加新功能（feature）
+  # fix ：     修复 bug
+  # docs：     文档（documentation）
+  # style：    样式及代码格式化等不涉及逻辑的改动点
+  # refactor： 重构
+  # test：     添加测试用例
+  # chore：    构建过程或辅助工具的变动
+
+  # 这里推荐一个 lint 插件 commitlint。可根据需要添加
+  # 详细参考：https://github.com/conventional-changelog/commitlint
+
+  # 关于 commit 信息编写的更多规范指南
+  # 请参考：http://www.ruanyifeng.com/blog/2016/01/commit_message_change_log.html
+  ```
+
+  <br>
+
+  **[⬆ back to top](#)**
+
+  <br>
+
+  **到此编码规范的内容基本陈述完毕，说的东西有限、具体如何配置取决于你或你的团队要求！** **Go 🚠**
 
 ### 20. 完善应用
 
@@ -3014,3 +3048,7 @@ trim_trailing_whitespace = false
 - [Prettier CLI](https://prettier.io/docs/en/cli.html)
 - [stylelint-config-prettier](https://github.com/prettier/stylelint-config-prettier)
 - [pre-commit](https://github.com/pre-commit/pre-commit)
+- [lint-staged](https://www.npmjs.com/package/lint-staged)
+- [Husky](https://github.com/typicode/husky)
+- [Commit message 和 Change log 编写指南](http://www.ruanyifeng.com/blog/2016/01/commit_message_change_log.html)
+- [commitlint](https://github.com/conventional-changelog/commitlint)
