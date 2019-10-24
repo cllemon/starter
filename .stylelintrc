@@ -1,0 +1,22 @@
+{
+  "extends": [
+    "stylelint-config-recommended",
+    "stylelint-config-prettier"
+  ],
+  "rules": {
+    "indentation": 2,
+    "declaration-colon-space-after": "always",
+    "declaration-colon-space-before": "never",
+    "function-comma-space-after": "always",
+    "function-url-quotes": "always",
+    "media-feature-colon-space-before": "never",
+    "media-feature-name-no-vendor-prefix": true,
+    "max-empty-lines": 5,
+    "number-leading-zero": "never",
+    "number-no-trailing-zeros": true,
+    "at-rule-semicolon-newline-after": "always",
+    "selector-list-comma-space-before": "never",
+    "selector-list-comma-newline-after": "always",
+    "string-quotes": "single",
+  }
+}

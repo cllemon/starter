@@ -7,15 +7,15 @@
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
-    "plugin:jsx-a11y/recommended"
+    "plugin:jsx-a11y/recommended",
+    "plugin:prettier/recommended",
+    "prettier/react"
   ],
   "parser": "babel-eslint",
   "plugins": ["react", "jsx-a11y", "react-hooks", "import"],
   "rules": {
     "semi": ["error", "always"],
     "quotes": ["error", "single"],
-    "jsx-quotes": ["error", "prefer-single"],
-    "comma-dangle": ["error", "never"],
     "camelcase": [0, { "properties": "never" }],
     "no-console": [2, { "allow": ["warn", "error"] }],
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
@@ -26,6 +26,9 @@
     "react/no-unused-prop-types": "off"
   },
   "settings": {
+    "react": {
+      "version": "16.10.2"
+    },
     "import/resolver": "webpack"
   },
   "globals": {
