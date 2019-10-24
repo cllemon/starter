@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import styles from './Setting.scss';
 
 function Setting() {
-  const history = useHistory();
+  const history = useHistory()
 
   function handleClick() {
     history.push('/github');
