@@ -23,6 +23,18 @@ a:active {
   color: #3a8ee6;
 }
 
+h1 {
+  font-size: 20px;
+}
+
+h2 {
+  font-size: 18px;
+}
+
+h3 {
+  font-size: 16px;
+}
+
 h1,
 h2,
 h3,
@@ -31,6 +43,13 @@ h5,
 h6 {
   color: #606266;
   font-weight: inherit;
+}
+
+h4,
+h5,
+h6,
+p {
+  font-size: inherit;
 }
 
 h1:first-child,
@@ -49,25 +68,6 @@ h4:last-child,
 h5:last-child,
 h6:last-child {
   margin-bottom: 0;
-}
-
-h1 {
-  font-size: 20px;
-}
-
-h2 {
-  font-size: 18px;
-}
-
-h3 {
-  font-size: 16px;
-}
-
-h4,
-h5,
-h6,
-p {
-  font-size: inherit;
 }
 
 p {

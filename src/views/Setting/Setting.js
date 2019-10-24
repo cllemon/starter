@@ -15,7 +15,7 @@ function Setting() {
       <div className={`${styles.bg} ${styles.wh}`}>
         {`当前环境： ${process.env.NODE_ENV}`}
       </div>
-      <button type='button' onClick={handleClick}>
+      <button type="button" onClick={handleClick}>
         Go github
       </button>
     </div>

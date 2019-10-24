@@ -1,17 +1,12 @@
 import React from 'react';
-import {
-  BrowserRouter,
-  Route,
-  Switch,
-  Redirect
-} from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import routes from './list';
 
 function RouterView(route) {
   return (
     <Route
       path={route.path}
-      render={(props) => {
+      render={props => {
         if (route.redirect) {
           return <Redirect to={route.redirect} />;
         }
@@ -20,7 +15,7 @@ function RouterView(route) {
             {...props}
             render={() => (
               <Switch>
-                {route.routes.map((children) => (
+                {route.routes.map(children => (
                   <RouterView key={children.path} {...children} />
                 ))}
               </Switch>
@@ -36,7 +31,7 @@ export default function Router() {
   return (
     <BrowserRouter>
       <Switch>
-        {routes.map((route) => (
+        {routes.map(route => (
           <RouterView key={route.path} {...route} />
         ))}
       </Switch>

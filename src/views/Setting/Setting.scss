@@ -1,4 +1,5 @@
 .root {
+  display:flex;
   .wh {
     width: 200px;
     height: 180px;
@@ -6,6 +7,6 @@
   .bg {
     text-align: center;
     line-height: 180px;
-    background: no-repeat url('../../assets/images/logo.png');
+    background: no-repeat url('~assets/images/logo.png');
   }
 }
