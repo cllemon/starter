@@ -1403,7 +1403,7 @@ trim_trailing_whitespace = false
         ...,
     +   new MiniCssExtractPlugin({
     +     filename: IS_PROD ? 'css/[name].[contenthash:8].css' : 'css/[name].css',
-    +     chunkFilename: IS_PROD ? 'css/[id].[contenthash:8].css' : 'css/[id].css'
+    +     chunkFilename: IS_PROD ? 'css/[name].[contenthash:8].css' : 'css/[name].css'
     +   })
       ]
     ```
@@ -2091,7 +2091,7 @@ trim_trailing_whitespace = false
     .bg {
       text-align: center;
       line-height: 180px;
-      background: no-repeat url('../../assets/images/logo.png');
+      background: no-repeat url('~assets/images/logo.png');
     }
   }
   // starter/Github/Github.scss
@@ -2103,7 +2103,7 @@ trim_trailing_whitespace = false
     .bg {
       text-align: center;
       line-height: 200px;
-      background: no-repeat url('../../assets/images/logo.png');
+      background: no-repeat url('~assets/images/logo.png');
     }
   }
   ```
@@ -2124,10 +2124,9 @@ trim_trailing_whitespace = false
   - import React, { useState } from 'react';
   + import React from 'react';
     import ReactDom from 'react-dom';
-  - import './style/global.css';
-  + import 'style/global.css';
+    import './style/global.css';
   - import styles from './index.scss';
-  + import Router from '@/router/index';
+  + import Router from './router/index';
 
   - const App = hot(module)(() => {
   -   const reversedTitle = () =>
@@ -2185,19 +2184,6 @@ trim_trailing_whitespace = false
       },
 
     ...
-  ```
-
-- **修改相关模块引入**
-
-  ```diff
-  <!-- starter/Setting/Setting.scss / starter/Github/Github.scss -->
-
-      .bg {
-        text-align: center;
-        line-height: 180px;
-  -     background: no-repeat url('../../assets/images/logo.png');
-  +     background: no-repeat url('assets/images/logo.png');
-      }
   ```
 
 - **管理资源**
@@ -2388,8 +2374,8 @@ trim_trailing_whitespace = false
   !             chunks/setting.316d765f.js     637 bytes       2  [emitted] [immutable]      setting
             chunks/vendors~main.a51021eb.js    164 KiB         3  [emitted] [immutable]     vendors~main
     chunks/vendors~main.a51021eb.js.LICENSE    1.01 KiB           [emitted]
-  !                     css/0.8de607a6.css     191 bytes       0  [emitted] [immutable]       github
-  !                     css/2.1a0bfbdd.css     195 bytes       2  [emitted] [immutable]       setting
+  !                css/github.8de607a6.css     191 bytes       0  [emitted] [immutable]       github
+  !               css/setting.1a0bfbdd.css     195 bytes       2  [emitted] [immutable]       setting
                       css/main.c1fb052e.css    830 bytes       1  [emitted] [immutable]        main
                   images/logo.581fa1d8.png     8.38 KiB           [emitted]
                                 index.html     667 bytes          [emitted]
@@ -2464,11 +2450,13 @@ trim_trailing_whitespace = false
 
   - [**prettier:**](https://github.com/prettier/prettier) 代码格式化工具，它通过解析代码并使用自己的规则重新打印代码，从而实现一致的样式，并在必要时包装代码。
 
+  <br>
+
   > 论述完编码规范的重要性，及工具链之后，我们看看如何在项目中应用。
 
-- **配置 [eslint](https://github.com/eslint/eslint)**
+#### 配置 [eslint](https://github.com/eslint/eslint)
 
-  **安装**
+- **安装**
 
   ```sh
   $ yarn add -D eslint                          # eslint
@@ -2480,7 +2468,7 @@ trim_trailing_whitespace = false
   $ yarn add -D eslint-import-resolver-webpack  # 用于 eslint-plugin-import的 Webpack-literate 模块解析插件。
   ```
 
-  **新建 eslint 配置文件**
+- **新建 eslint 配置文件**
 
   ```sh
   $ touch .eslintrc     # eslint 配置文件
@@ -2502,8 +2490,6 @@ trim_trailing_whitespace = false
       "rules": {
         "semi": ["error", "always"],
         "quotes": ["error", "single"],
-        "jsx-quotes": ["error", "prefer-single"],
-        "comma-dangle": ["error", "never"],
         "camelcase": [0, { "properties": "never" }],
         "no-console": [2, { "allow": ["warn", "error"] }],
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
@@ -2514,6 +2500,9 @@ trim_trailing_whitespace = false
         "react/no-unused-prop-types": "off"
       },
       "settings": {
+        "react": {
+          "version": "16.10.2"
+        },
         "import/resolver": "webpack"
       },
       "globals": {
@@ -2528,19 +2517,21 @@ trim_trailing_whitespace = false
     dist
   ```
 
-  **配置说明**
+- **配置说明**
 
     1. [`"eslint:recommended"`](https://cn.eslint.org/docs/rules/) 启用推荐的规则
     2. [`"plugin:react/recommended"`](https://github.com/yannickcr/eslint-plugin-react/) 该插件会导出建议的配置，以强制实施 React 的良好做法。
     3. [`"babel-eslint"`](https://github.com/babel/babel-eslint) 一个对 Babel 解析器的包装，使其能够与 ESLint 兼容
-    4. rules: 自定义规则，去覆盖扩展配置。
+    4. rules: 自定义规则，可覆盖扩展配置。
     5. [`eslint-plugin-import`](https://github.com/benmosher/eslint-plugin-import) 该插件旨在支持ES2015 +（ES6 +）导入/导出语法的检查，并防止文件路径和导入名称拼写错误的问题。
     6. `"import/resolver": "webpack"` ：解决 webpack 别名配置导致的 `eslint-plugin-import` 报错。
-    7. 此配置是一份交简单的配置 详细配置说明请参考 [Configuring ESLint](https://cn.eslint.org/docs/user-guide/configuring)
+    7. 此配置是一份简单的配置 详细配置说明请参考 [Configuring ESLint](https://cn.eslint.org/docs/user-guide/configuring)
 
-  > **注：eslint 配置还是根据团队内部去协定出一套行之有效的规范。**
+  <br>
 
-  **修改 package.json 新建快捷命令**
+  > **注：eslint 配置需要根据团队内部去协定出一套行之有效的规范。**
+
+- **修改 package.json 新建快捷命令**
 
   ```diff
   <!-- starter/package.json -->
@@ -2554,21 +2545,28 @@ trim_trailing_whitespace = false
        },
   ```
 
-  **执行命令，查看是否存在不符合规则之处**
+- **执行命令，查看是否存在不符合规则之处**
 
   ```sh
   $ yarn lint:script     # 执行 lint
   $ yarn lint-fix:script # 执行 lint 并自动修复
 
-  # 如果遇到错误，根据规则修复即可
+  # 结果, 如果存在错误，则根据文档自行修复。
+
+  $ npm run lint:script -- --fix
+
+  > starter@1.0.0 lint:script /Users/gt/LEMON/starter
+  > eslint --ext '.js,.jsx' src "--fix"
+
+  ✨  Done in 2.59s.
   ```
 
-  **在每次转译js、jsx文件之前，执行 lint 格式化代码**
+- **另外，我们希望在每次转译js、jsx文件之前，执行 lint 格式化代码**
 
   ```sh
   # 安装
 
-  $ yarn add -D eslint-loader                   # eslint loader (for webpack)
+  $ yarn add -D eslint-loader  # eslint loader (for webpack)
   ```
 
   ```diff
@@ -2605,8 +2603,316 @@ trim_trailing_whitespace = false
     ...
   ```
 
+  > **测试一下吧. Try it 🚨**
 
-**[⬆ back to top](#)**
+  <br>
+
+  **[⬆ back to top](#)**
+
+  <br>
+
+#### 配置 [stylelint](https://github.com/stylelint/stylelint)
+
+- **安装**
+
+  ```sh
+  $ yarn add -D stylelint                    # 强大的现代化 linter，可帮助您避免错误并在样式中强制执行约定。
+  $ yarn add -D stylelint-config-recommended # Stylelint 的推荐可共享配置
+  $ yarn add -D postcss-reporter             # 在控制台中记录 PostCSS 消息
+
+  # $ yarn add -D stylelint-config-standard  # Stylelint 的标准可共享配置
+  # stylelint 插件通过 PostCSS 注册警告 。因此，您需要用于打印警告的 PostCSS 运行器或插件，其目的是格式化和打印警告（例如 postcss-reporter）
+  ```
+
+- **新建 stylelint 配置文件**
+
+  ```sh
+  $ touch .stylelintrc     # stylelint 配置文件
+  ```
+
+  ```json
+  <!-- starter/.eslintrc -->
+  # 你也可以使用 stylint 推荐开启的规则, 只需引入扩展推荐包即可。
+  # 你也可以 使用 rules 扩充规则或者覆盖推荐规则，这取决于你！
+
+  {
+    "extends": "stylelint-config-recommended",
+    "rules": {
+      "indentation": 2,                              // 缩进
+      "declaration-colon-space-after": "always",     // 在冒号声明后需要一个空格或禁止使用空格。 a { color:pink } => a { color: pink }
+      "declaration-colon-space-before": "never",     // 在冒号之前需要一个空格或禁止空格。 a { color : pink } => a { color: pink }
+      "function-comma-space-after": "always",        // 在功能的逗号后面需要一个空格或不允许空格。 a { transform: translate(1,1) } => a { transform: translate(1, 1) }
+      "function-url-quotes": "always",               // 要求或禁止使用网址引号 a { background: url(x.jpg) } => a { background: url("x.jpg") }
+      "media-feature-colon-space-before": "never",   // 媒体功能中的冒号之前需要单个空格或不允许使用空格。@media (max-width :600px) {} => @media (max-width:600px) {}
+      "media-feature-name-no-vendor-prefix": true,   // 禁止使用媒体功能名称的供应商前缀。@media (-webkit-min-device-pixel-ratio: 1) {} => @media (min-resolution: 96dpi) {}
+      "max-empty-lines": 5,                          // 限制相邻的空行数。
+      "number-leading-zero": "never",                // 小数部分小于或等于1的前导零。a { line-height: 0.5; } => a { line-height: .5; }
+      "number-no-trailing-zeros": true,              // 禁止数字尾随零。a { top: 1.0px } => a { top: 1px }
+      "at-rule-semicolon-newline-after": "always",   // 规则后的分号换行符 @import url("x.css"); a {} => @import url("x.css");\n a {}
+      "selector-list-comma-space-before": "never",   // 选择器列表的逗号前需要一个空格或不允许空格 a ,b { color: pink; } => a, b { color: pink; }
+      "selector-list-comma-newline-after": "always", // 选择器列表的逗号后需要换行符或不允许使用空格。a, b { color: pink; } => a,\n b { color: pink; }
+      "string-quotes": "single",                     // 在字符串周围指定单引号或双引号。 a { content: “x”; } => a { content: 'x'; }
+    }
+  }
+  ```
+
+- **扩展共享配置及规则表**
+
+  - [**stylelint-config-recommended**](https://github.com/stylelint/stylelint-config-recommended)
+  - [**stylelint-config-standard**](https://github.com/stylelint/stylelint-config-standard)
+  - [**stylelint rules**](https://stylelint.io/user-guide/rules/at-rule-blacklist)
+
+- **添加快捷命令**
+
+  ```diff
+  <!-- starter/package.json -->
+
+       "scripts": {
+         "test": "echo \"Error: no test specified\" && exit 1",
+         "server": "cross-env NODE_ENV=development webpack-dev-server --color --progress",
+         "build": "cross-env NODE_ENV=production webpack --color --progress",
+         "lint:script": "eslint --ext '.js,.jsx' src",
+         "lint-fix:script": "npm run lint:script -- --fix",
+  +      "lint:style": "stylelint 'src/**/*.css' 'src/**/*.scss' --syntax scss",
+  +      "lint-fix:style": " npm run lint:style -- --fix",
+       },
+  ```
+
+- **执行命令，查看是否存在不符合规则之处**
+
+  ```sh
+  $ yarn lint:style     # 格式化 style
+  $ yarn lint-fix:style # 格式化 style 并自动修复
+
+  # 结果
+
+  $  npm run lint:style -- --fix
+
+  > starter@1.0.0 lint:style /Users/gt/LEMON/starter
+  > stylelint 'src/**/*.css' 'src/**/*.scss' --syntax scss "--fix"
+
+  src/style/reset.css
+  54:1  ✖  Expected selector "h1" to come before selector "h1:first-child"   no-descending-specificity
+  54:1  ✖  Expected selector "h1" to come before selector "h1:last-child"    no-descending-specificity
+  58:1  ✖  Expected selector "h2" to come before selector "h2:first-child"   no-descending-specificity
+  58:1  ✖  Expected selector "h2" to come before selector "h2:last-child"    no-descending-specificity
+  62:1  ✖  Expected selector "h3" to come before selector "h3:first-child"   no-descending-specificity
+  62:1  ✖  Expected selector "h3" to come before selector "h3:last-child"    no-descending-specificity
+  66:1  ✖  Expected selector "h4" to come before selector "h4:first-child"   no-descending-specificity
+  66:1  ✖  Expected selector "h4" to come before selector "h4:last-child"    no-descending-specificity
+  67:1  ✖  Expected selector "h5" to come before selector "h5:first-child"   no-descending-specificity
+  67:1  ✖  Expected selector "h5" to come before selector "h5:last-child"    no-descending-specificity
+  68:1  ✖  Expected selector "h6" to come before selector "h6:first-child"   no-descending-specificity
+  68:1  ✖  Expected selector "h6" to come before selector "h6:last-child"    no-descending-specificity
+
+  # no-descending-specificity 禁止较低特异性的选择器在覆盖较高特异性的选择器之后出现。
+  # 根据规则表修复 reset.css 文件
+
+  # 再次运行，结果：
+
+  $  npm run lint:style -- --fix
+
+  > starter@1.0.0 lint:style /Users/gt/LEMON/starter
+  > stylelint 'src/**/*.css' 'src/**/*.scss' --syntax scss "--fix"
+
+  ✨  Done in 1.96s.
+  ```
+
+  > **测试一下吧. Try it 💄**
+
+  <br>
+
+  **[⬆ back to top](#)**
+
+  <br>
+
+#### 配置 [prettier](https://github.com/prettier/prettier)
+
+- **安装**
+
+  ```sh
+  $ yarn add -D prettier
+  $ yarn add -D eslint-plugin-prettier # 将 Prettier 作为 ESLint 规则运行，并将差异报告为单个ESLint问题
+
+  $ yarn add -D eslint-config-prettier # 关闭所有不必要的或可能与 Prettier 冲突的规则。
+  $ yarn add -D stylelint-config-prettier # 禁用与 Prettier 冲突的规则的配置
+  ```
+
+  > 关于这些禁用规则，请参考 [eslint-config-prettier#special-rules](https://github.com/prettier/eslint-config-prettier#special-rules),   [stylelint-config-prettier special-rules](https://github.com/prettier/stylelint-config-prettier/blob/master/src/index.js)
+
+- **在 eslint 配置中扩展 prettier**
+
+  ```diff
+  <!-- starter/.eslintrc -->
+
+    {
+      ...
+
+  -   "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:jsx-a11y/recommended"],
+  +   "extends": [
+  +     "eslint:recommended",
+  +     "plugin:react/recommended",
+  +     "plugin:jsx-a11y/recommended",
+  +     "plugin:prettier/recommended",
+  +     "prettier/react"
+  +   ],
+
+      ...
+
+    }
+
+
+  <!-- 说明 -->
+
+  "plugin:prettier/recommended" does three things:
+
+    1. Enables eslint-plugin-prettier.
+    2. Sets the prettier/prettier rule to "error".
+    3. Extends the eslint-config-prettier configuration.
+
+  "prettier/react"
+
+    为了支持特殊的 ESLint 插件（eslint-plugin-react）所添加额外的排除项
+  ```
+
+  > 当然，你可以在 `.prettierrc` 文件中设置 `Prettier` 自己的选项。
+
+- **新建 prettier 配置文件**
+
+  ```sh
+  $ touch .prettierrc     # prettier 配置文件
+  ```
+
+  ```json
+  <!-- starter/.prettierrc -->
+
+    {
+      "semi": true,
+      "singleQuote": true,
+      "trailingComma": 'all',
+    }
+
+  ```
+
+- **在 stylelint 配置中扩展 prettier**
+
+  ```diff
+  <!-- starter/.stylelintrc -->
+
+    {
+      ...
+
+  -   "extends": "stylelint-config-recommended",
+  +   "extends": [
+  +     "stylelint-config-recommended",
+  +     "stylelint-config-prettier"
+  +   ],
+
+      ...
+
+    }
+  ```
+
+- **说明**
+
+  - **上述我们在扩展 eslint、stylelint 配置都是为了整合工具并把它们集成在一起。所以你看到的处理是，禁用了其它 linter 中可能与 Prettier 希望格式化代码的方式冲突的所有现有格式化规则**
+
+  <br>
+
+- **添加快捷命令行**
+
+  ```diff
+  <!-- starter/package.json -->
+
+    ...
+
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "server": "cross-env NODE_ENV=development webpack-dev-server --color --progress",
+      "build": "cross-env NODE_ENV=production webpack --color --progress",
+      "lint:script": "eslint --ext '.js,.jsx' src",
+      "lint-fix:script": "npm run lint:script -- --fix",
+      "lint:style": "stylelint 'src/**/*.css' 'src/**/*.scss' --syntax scss",
+      "lint-fix:style": " npm run lint:style -- --fix",
+  +   "prettier": "prettier --check --write './src/**/*.js' './src/**/*.jsx'"
+    },
+
+    ...
+  ```
+
+  > 更多参数请参考 [Prettier CLI](https://prettier.io/docs/en/cli.html)
+
+- **运行命令，格式化代码**
+
+  ```sh
+  $ yarn prettier
+
+  # 结果, 它帮你格式化的代码如下
+
+  $ prettier --check --write './src/**/*.js' './src/**/*.jsx'
+
+  Checking formatting...
+
+  src/index.js
+  src/router/index.js
+  src/router/list.js
+  src/views/Github/Github.js
+  src/views/Setting/Setting.js
+
+  Code style issues fixed in the above file(s).
+  ✨  Done in 0.79s.
+  ```
+
+  <br>
+
+  **[⬆ back to top](#)**
+
+  <br>
+
+#### **pre-commit**
+
+  > Git钩子脚本对于在提交代码审查之前识别简单问题很有用。我们在每次提交时都运行钩子，以自动指出代码中的问题，例如缺少分号，尾随空白和调试语句。通过在代码审阅之前指出这些问题，代码审阅者可以专注于更改的体系结构，而不会因为琐碎的风格问题而浪费时间。
+
+- **安装**
+
+  ```sh
+  $ yarn add -D pre-commit # A framework for managing and maintaining multi-language pre-commit hooks.
+  ```
+
+- **配置**
+
+  ```diff
+  <!-- starter/package.json -->
+
+    {
+      "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "server": "cross-env NODE_ENV=development webpack-dev-server --color --progress",
+        "build": "cross-env NODE_ENV=production webpack --color --progress",
+  +     "lint": "npm run lint:style && npm run lint:script",
+  +     "lint-fix": "npm run lint-fix:style && npm run lint-fix:script",
+        "lint:script": "eslint --ext '.js,.jsx' src",
+        "lint-fix:script": "npm run lint:script -- --fix",
+        "lint:style": "stylelint 'src/**/*.css' 'src/**/*.scss' --syntax scss",
+        "lint-fix:style": " npm run lint:style -- --fix",
+        "prettier": "prettier --check --write './src/**/*.js' './src/**/*.jsx'"
+      },
+  +   "pre-commit": [
+  +     "prettier",
+  +     "lint-fix"
+  +   ],
+    }
+  ```
+
+  > 测试一下吧！ **Try it!**  🎉🎉🎊🎊
+
+  **到此编码规范的内容基本陈述完毕，说的东西有限、具体如何配置取决于你或你的团队要求！** **Go 🚠**
+
+  <br>
+
+  **[⬆ back to top](#)**
+
+  <br>
 
 ### 20. 完善应用
 
@@ -2698,3 +3004,13 @@ trim_trailing_whitespace = false
 - [eslint-plugin-jsx-a11y](https://www.npmjs.com/package/eslint-plugin-jsx-a11y)
 - [eslint-plugin-import](https://github.com/benmosher/eslint-plugin-import)
 - [eslint-import-resolver-webpack](https://www.npmjs.com/package/eslint-import-resolver-webpack)
+- [stylelint](https://stylelint.io)
+- [stylelint-config-recommended](https://github.com/stylelint/stylelint-config-recommended)
+- [stylelint-config-standard](https://github.com/stylelint/stylelint-config-standard)
+- [postcss-reporter](https://github.com/postcss/postcss-reporter)
+- [prettier](https://github.com/prettier/prettier)
+- [eslint-plugin-prettier](https://github.com/prettier/eslint-plugin-prettier)
+- [eslint-config-prettier](https://github.com/prettier/eslint-config-prettier)
+- [Prettier CLI](https://prettier.io/docs/en/cli.html)
+- [stylelint-config-prettier](https://github.com/prettier/stylelint-config-prettier)
+- [pre-commit](https://github.com/pre-commit/pre-commit)
