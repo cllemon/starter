@@ -1,29 +1,43 @@
 import React from 'react';
 import loadable from '@loadable/component';
+import Loading from '@/components/Loading/Loading';
 
-const Github = import(
-  /* webpackChunkName: "github" */ '@/views/Github/Github.js'
+const BottomTabNavigator = import(
+  /* webpackChunkName: "bottom-tab-navigator" */ '@/components/BottomTabNavigator/BottomTabNavigator'
 );
+const Github = import(/* webpackChunkName: "github" */ '@/views/Github/Github');
 const Setting = import(
-  /* webpackChunkName: "setting" */ '@/views/Setting/Setting.js'
+  /* webpackChunkName: "setting" */ '@/views/Setting/Setting'
+);
+const Empty = import(
+  /* webpackChunkName: 'not-found' */ '@/components/Empty/Empty'
 );
 
-const AsyncComponent = loader =>
-  loadable(loader, { fallback: <h3>Loading...</h3> });
+const AsyncComponent = loader => loadable(loader, { fallback: <Loading /> });
 
 const routes = [
   {
     path: '/',
     exact: true,
-    redirect: '/github',
+    redirect: '/dashboard/github',
   },
   {
-    path: '/github',
-    component: AsyncComponent(() => Github),
+    path: '/dashboard',
+    component: AsyncComponent(() => BottomTabNavigator),
+    routes: [
+      {
+        path: '/dashboard/github',
+        component: AsyncComponent(() => Github),
+      },
+      {
+        path: '/dashboard/setting',
+        component: AsyncComponent(() => Setting),
+      },
+    ],
   },
   {
-    path: '/setting',
-    component: AsyncComponent(() => Setting),
+    path: '*',
+    component: AsyncComponent(() => Empty),
   },
 ];
 
