@@ -13,7 +13,7 @@
     "lint-fix:script": "npm run lint:script -- --fix",
     "lint:style": "stylelint 'src/**/*.css' 'src/**/*.scss' --syntax scss",
     "lint-fix:style": " npm run lint:style -- --fix",
-    "prettier": "prettier --check --write './src/**/*.js' './src/**/*.jsx'"
+    "prettier": "prettier --check --write 'src/**/*.{js,jsx,scss,css}' --config ./.prettierrc"
   },
   "repository": {
     "type": "git",
@@ -36,10 +36,9 @@
     }
   },
   "lint-staged": {
-    "src/**/*.{scss, css}": "npm run lint-fix:style",
-    "src/**/*.{js, jsx}": [
+    "src/**/*.{js, jsx, css, scss}": [
       "npm run prettier",
-      "npm run lint-fix:script",
+      "npm run lint-fix",
       "git add"
     ]
   },
@@ -89,6 +88,8 @@
   "dependencies": {
     "@hot-loader/react-dom": "^16.10.2",
     "@loadable/component": "^5.10.3",
+    "axios": "^0.19.0",
+    "prop-types": "^15.7.2",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-hot-loader": "^4.12.15",
