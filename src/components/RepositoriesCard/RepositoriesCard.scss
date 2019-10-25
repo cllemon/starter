@@ -1,0 +1,52 @@
+@import 'style/variable.scss';
+.root {
+  display: flex;
+  align-items: center;
+  width: 90%;
+  height: 20%;
+  box-shadow: 0 2px 8px 1px rgba(0, 0, 0, .1);
+  margin-bottom: 25px;
+  border-radius: 6px;
+  padding: 10px;
+  // overflow: hidden;
+  .avatar {
+    width: 70px;
+    height: 70px;
+    margin: 0 16px;
+  }
+  .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    .name {
+      margin: 0;
+      width: 200px;
+    }
+    .description {
+      width: 234px;
+      max-height: 70px;
+      overflow: hidden;
+      margin: 6px 0;
+      font-size: 12px;
+      color: $font-color-main;
+
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+    }
+    .assessment {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      font-size: 12px;
+      color: $font-color-secondary;
+      .item {
+        margin-right: 10px;
+        .icon {
+          margin: 2px 2px 0 0;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
