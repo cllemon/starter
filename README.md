@@ -2834,7 +2834,7 @@ trim_trailing_whitespace = false
       "lint-fix:script": "npm run lint:script -- --fix",
       "lint:style": "stylelint 'src/**/*.css' 'src/**/*.scss' --syntax scss",
       "lint-fix:style": " npm run lint:style -- --fix",
-  +   "prettier": "prettier --check --write './src/**/*.js' './src/**/*.jsx'"
+  +   "prettier": "prettier --check --write 'src/**/*.{js,jsx,scss,css}' --config ./.prettierrc"
     },
 
     ...
@@ -2896,7 +2896,7 @@ trim_trailing_whitespace = false
         "lint-fix:script": "npm run lint:script -- --fix",
         "lint:style": "stylelint 'src/**/*.css' 'src/**/*.scss' --syntax scss",
         "lint-fix:style": " npm run lint:style -- --fix",
-        "prettier": "prettier --check --write './src/**/*.js' './src/**/*.jsx'"
+        "prettier": "prettier --check --write 'src/**/*.{js,jsx,scss,css}' --config ./.prettierrc"
       },
   +   "husky": {
   +     "hooks": {
@@ -2904,17 +2904,16 @@ trim_trailing_whitespace = false
   +     }
   +   },
   +   "lint-staged": {
-  +     "src/**/*.{scss, css}": "npm run lint-fix:style",
-  +     "src/**/*.{js,jsx}": [
+  +     "src/**/*.{js, jsx, css, scss}": [
   +       "npm run prettier",
-  +       "npm run lint-fix:script",
+  +       "npm run lint-fix",
   +       "git add"
   +     ]
   +   }
     }
   ```
 
-  >  **推个代码测试一下吧！ Try it!**  🎉🎉🎊🎊
+  >  **推个代码测试一下吧！ Try it!**  🎊🎊
 
   <br>
 
@@ -2954,11 +2953,214 @@ trim_trailing_whitespace = false
 
 ![x](https://user-gold-cdn.xitu.io/2019/10/22/16df13960eb84498?w=930&h=660&f=png&s=35990)
 
+- **由草图需求改造我们的项目**
+
+  - **改造路由表**
+
+    ```jsx
+    import React from 'react';
+    import loadable from '@loadable/component';
+    import Loading from '@/components/Loading/Loading';
+
+    const BottomTabNavigator = import(
+      /* webpackChunkName: "bottom-tab-navigator" */ '@/components/BottomTabNavigator/BottomTabNavigator'
+    );
+    const Empty = import(
+      /* webpackChunkName: 'not-found' */ '@/components/Empty/Empty'
+    );
+    const Github = import(/* webpackChunkName: "github" */ '@/views/Github/Github');
+    const Setting = import(
+      /* webpackChunkName: "setting" */ '@/views/Setting/Setting'
+    );
+
+    const AsyncComponent = loader => loadable(loader, { fallback: <Loading /> });
+
+    const routes = [
+      {
+        path: '/',
+        exact: true,
+        redirect: '/dashboard/github',
+      },
+      {
+        path: '/dashboard',
+        component: AsyncComponent(() => BottomTabNavigator),
+        routes: [
+          {
+            path: '/dashboard/github',
+            component: AsyncComponent(() => Github),
+          },
+          {
+            path: '/dashboard/setting',
+            component: AsyncComponent(() => Setting),
+          },
+        ],
+      },
+      {
+        path: '*',
+        component: AsyncComponent(() => Empty),
+      },
+    ];
+
+    export default routes;
+    ```
+
+  - **改造 Github 页面**
+
+    ```jsx
+    /*
+     * 路径: starter/src/views/Github
+     * 说明:
+     *      RepositoriesCard   根据草图编写的仓库信息卡片
+     *      Loading            加载态组件
+     *      Empty              空数据态组件
+     *      useRequest         自定义 hook，用于包装请求
+     *      searchRepositories 统一 API 请求封装
+     *
+     * 提示: 说明涉及到的组件，可以参考项目；你也可以自己实现，这不重要。
+     */
+
+    import React from 'react';
+    import styles from './Github.scss';
+    import RepositoriesCard from '@/components/RepositoriesCard/RepositoriesCard';
+    import Loading from '@components/Loading/Loading';
+    import Empty from '@components/Empty/Empty';
+    import useRequest from '@/containers/useRequest';
+    import { searchRepositories } from '@/services/api/github';
+
+    function Github() {
+      const [loading, data] = useRequest(searchRepositories, { q: 'javascript' });
+
+      if (loading === true) {
+        return <Loading />
+      }
+
+      return (
+        <div className={styles.root}>
+          {(data && data.items.map(
+            ({
+              description,
+              id,
+              name,
+              forks_count,
+              stargazers_count,
+              language,
+              owner
+            }) => (
+              <RepositoriesCard
+                key={id}
+                name={name}
+                avatarUrl={owner.avatar_url}
+                description={description}
+                stargazersCount={stargazers_count}
+                forksCount={forks_count}
+                language={language}
+              />
+            )
+          ))
+            || <Empty />}
+        </div>
+      );
+    }
+
+    export default Github;
+    ```
+
+    > ****
+
+  - **改造 Setting 页面（不改造 😜）**
+
+  <br>
+
+  > **我们在改造 Github 页面, 在组件内部调用了请求方法，并对请求做了统一封装，在继续改造工作之前，我们先来看看 *前后端交互***
+
 **[⬆ back to top](#)**
 
-### 21. 前后端交互
+### 21. 前后端交互 [Axios](https://github.com/axios/axios)
+
+  ![x](https://user-gold-cdn.xitu.io/2019/10/25/16e0239f9de23880?w=740&h=206&f=png&s=12553)
+
+- **安装**
+
+  ```sh
+  $ yarn add axios # Promise based HTTP client for the browser and node.js
+  ```
+
+- **新建相关文件**
+
+  ```sh
+  # 新建 services 文件夹
+
+  $ cd src && mkdir services
+  $ cd services && touch index.js   # 基于 axios 简单封装
+  $ mkdir interface && cd interface # 用于存在项目所有接口
+  $ touch github.js                 # 用于存放 GitHub 相关请求
+  ```
+
+- **基于 axios 简单封装 src/services/index.js**
+
+  ```js
+  /**
+   * 说明: AXIOS_DEFAULT_OPTIONS 默认配置，详细参考 utils
+   *
+   * 注: 以下封装仅仅简单包装一层，你也可以自己实现。
+   */
+  import axios from 'axios';
+  import constants from '@/utils/constants';
+
+  // 使用自定义配置新建一个 axios 实例
+  const instance = axios.create(constants.AXIOS_DEFAULT_OPTIONS);
+
+  // 请求拦截器
+  instance.interceptors.request.use(
+    (AxiosRequsetConfig) => AxiosRequsetConfig, // 在发送请求之前做些什么
+    (error) => Promise.reject(error) // 对请求错误做些什么
+  );
+
+  // 响应拦截器
+  instance.interceptors.response.use(
+    (AxiosResponse) => AxiosResponse, // 对响应数据做点什么
+    (error) => Promise.reject(error) // 对响应错误做点什么, 如，处理一些鉴权类问题
+  );
+
+  export default function (options = {}, customConfig = {}) {
+    return new Promise((resolve, reject) => {
+      const finalConfig = Object.assign(options, customConfig);
+      instance(finalConfig)
+        .then(({ data }) => {
+          if (data) {
+            return resolve(data);
+          }
+          return reject(new Error('Request return result exception!'));
+        })
+        .catch((reason) => reject(reason));
+    });
+  }
+  ```
+
+- **业务接口层 src/services/interface/github.js**
+
+  ```js
+  import network from '../index';
+
+  /**
+  * @desc 搜索仓库
+  *
+  * @param {Object} data 请求参数
+  * @returns {Promise}
+  */
+  export const searchRepositories = (data = {}) => network({
+    url: '/search/repositories',
+    params: data
+  });
+  ```
+
+  > **上述简单封装核心请求方法，分离接口等，主要目的是辅助项目论述，当然，这还很简单，你可以自己根据实际需要做更全面的封装！**
 
 **[⬆ back to top](#)**
+
+### 22. 项目改在
+
+
 
 ### 22. 数据自造 MOCK
 
