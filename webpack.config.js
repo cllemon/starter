@@ -283,9 +283,9 @@ module.exports = function() {
       open: false,
       port: 3000,
       stats: 'errors-only',
-      hot: true
-      // host: '0.0.0.0',
-      // useLocalIp: true,
+      hot: true,
+      host: '0.0.0.0',
+      useLocalIp: true,
     };
     baseConfig.plugins.concat([new webpack.HotModuleReplacementPlugin()]);
   }
