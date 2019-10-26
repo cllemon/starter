@@ -3318,8 +3318,107 @@ trim_trailing_whitespace = false
     <summary>查看现阶段完整工程目录</summary>
 
     ```diff
-
-
+    └── starter
+      ├── dist
+      │   ├── chunks
+      │   │   ├── bottom-tab-navigator.77d17027.js
+      │   │   ├── github.4e7f6c35.js
+      │   │   ├── not-found.638dbdfc.js
+      │   │   ├── setting.bc3fbe14.js
+      │   │   ├── vendors~github.7acdaa67.js
+      │   │   ├── vendors~github.7acdaa67.js.LICENSE
+      │   │   ├── vendors~main.b1a4bdbf.js
+      │   │   └── vendors~main.b1a4bdbf.js.LICENSE
+      │   ├── css
+      │   │   ├── bottom-tab-navigator.25c0dead.css
+      │   │   ├── github.866c72ba.css
+      │   │   ├── main.45091b7c.css
+      │   │   ├── not-found.d566b1be.css
+      │   │   └── setting.2b60ef7c.css
+      │   ├── fonts
+      │   │   ├── iconfont.63765329.woff
+      │   │   ├── iconfont.c2eabadd.ttf
+      │   │   └── iconfont.cad7bb52.eot
+      │   ├── images
+      │   │   ├── empty-data.788c1924.png
+      │   │   ├── logo.581fa1d8.png
+      │   │   └── webpage-lost.a02f7942.png
+      │   ├── svg
+      │   │   └── iconfont.1247822e.svg
+      │   ├── main.a010b425.js
+      │   └── index.html
+      ├── node_modules
+      |   ├──  ...
+      |   └──  ...
+      ├── public
+      │   ├── favicon.ico
+      │   └── index.html
+      ├── src
+      │   ├── assets
+      │   │   ├── font
+      │   │   │   ├── iconfont.css
+      │   │   │   ├── iconfont.eot
+      │   │   │   ├── iconfont.svg
+      │   │   │   ├── iconfont.ttf
+      │   │   │   └── iconfont.woff
+      │   │   └── images
+      │   │       ├── empty-data.png
+      │   │       ├── logo.png
+      │   │       └── webpage-lost.png
+      │   ├── components
+      │   │   ├── BottomTabNavigator
+      │   │   │   ├── BottomTabNavigator.js
+      │   │   │   ├── BottomTabNavigator.scss
+      │   │   │   └── index.zh-CN.md
+      │   │   ├── Circle
+      │   │   │   ├── Circle.js
+      │   │   │   ├── Circle.scss
+      │   │   │   └── index.zh-CN.md
+      │   │   ├── Empty
+      │   │   │   ├── Empty.js
+      │   │   │   ├── Empty.scss
+      │   │   │   └── index.zh-CN.md
+      │   │   ├── Loading
+      │   │   │   ├── Loading.js
+      │   │   │   ├── Loading.scss
+      │   │   │   └── index.zh-CN.md
+      │   │   ├── README.md
+      │   │   └── RepositoriesCard
+      │   │       ├── RepositoriesCard.js
+      │   │       ├── RepositoriesCard.scss
+      │   │       └── index.zh-CN.md
+      │   ├── containers
+      │   │   ├── README.md
+      │   │   └── useRequest.js
+      │   ├── index.js
+      │   ├── router
+      │   │   ├── index.js
+      │   │   └── list.js
+      │   ├── services
+      │   │   ├── index.js
+      │   │   └── interface
+      │   │       └── github.js
+      │   ├── style
+      │   │   ├── global.css
+      │   │   ├── reset.css
+      │   │   └── variable.scss
+      │   ├── utils
+      │   │   ├── constants.js
+      │   │   ├── enume.js
+      │   │   └── tools.js
+      │   └── views
+      │       ├── Github
+      │       │   ├── Github.js
+      │       │   └── Github.scss
+      │       └── Setting
+      │           ├── Setting.js
+      │           └── Setting.scss
+      ├── webpack.config.js
+      ├── postcss.config.js
+      ├── package.json
+      ├── LICENSE
+      ├── README.md
+      └── yarn.lock
     ```
 
   </details>
@@ -3330,11 +3429,15 @@ trim_trailing_whitespace = false
 
 **[⬆ back to top](#)**
 
-### 22. 数据自造 mock
+### 24. 数据自造 mock
 
 **[⬆ back to top](#)**
 
-### 23. 单元测试 jest
+### 25. 单元测试 jest
+
+**[⬆ back to top](#)**
+
+### 26. 部署上线
 
 **[⬆ back to top](#)**
 
