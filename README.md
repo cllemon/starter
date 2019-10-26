@@ -2678,6 +2678,26 @@ trim_trailing_whitespace = false
        },
   ```
 
+- **配置 postcss-reporter**
+
+  > 在控制台中记录 PostCSS 消息
+
+  ```diff
+
+
+  <!-- starter/postcss.config.js -->
+
+    module.exports = {
+      plugins: {
+        autoprefixer: {},
+  +     'postcss-reporter': {
+  +       clearReportedMessages: true, # 插件将在记录结果消息后清除它们。这样可以防止其他插件或您使用的任何运行程序再次记录相同的信息并引起混乱。
+  +       throwError: true             # 在插件记录您的消息后，如果发现任何警告，它将引发错误。
+  +     },
+      }
+    };
+  ```
+
 - **执行命令，查看是否存在不符合规则之处**
 
   ```sh
@@ -3154,15 +3174,163 @@ trim_trailing_whitespace = false
   });
   ```
 
-  > **上述简单封装核心请求方法，分离接口等，主要目的是辅助项目论述，当然，这还很简单，你可以自己根据实际需要做更全面的封装！**
+  > **上述简单封装核心请求方法，分离接口等，主要目的是辅助论述，当然，这还很简单，你可以自己根据实际需要做更全面的封装！**
 
 **[⬆ back to top](#)**
 
-### 22. 项目改在
+### 22. 项目改造 - 组件
+
+#### UI Component
+
+- **准则**
+  1. 最基础的组件形式，如：按钮、标签。
+  2. 无状态
+  3. 纯静态展示作用
+  4. 组成的基本结构（props + render）
+  5. 不需要依赖生命周期
+  6. 单一职责，多处复用。
+
+- **样例**
+
+  ```jsx
+  import React from 'react';
+  import PropTypes from 'prop-types';
+
+  const UI = ({ title }) => {
+    return (
+      <div className="UI">
+        { title }
+      </div>
+    );
+  };
+
+  UI.propTypes = {
+    title: PropTypes.string,
+  };
+
+  UI.defaultProps = {
+    title: 'UI Component !',
+  };
+
+  export default UI;
+  ```
+
+#### Container Component
+
+- **准则**
+  1. 单一职责原则，降低组件的耦合度
+  2. 提供数据（ 如：包含 Ajax 返回数据处理逻辑 ）
+  3. 与状态管理工具交互（ 如：包含 Redux 注入逻辑 ）
+  4. 有状态
+  5. 样式及 DOM 较少
+
+- **样例**
+
+  ```jsx
+  import { connect } from 'react-redux';
+  import Demo from 'components/Demo/Demo';
+  import {
+    incrementEnthusiasm,
+    decrementEnthusiasm
+  } from 'actions/index';
+
+  export function mapStateToProps({ enthusiasm }) {
+    return {
+      enthusiasm,
+    };
+  }
+
+  export function mapDispatchToProps(dispatch) {
+    return {
+      onIncrement: () => dispatch(actions.incrementEnthusiasm()),
+      onDecrement: () => dispatch(actions.decrementEnthusiasm()),
+    };
+  }
+
+  export default connect(mapStateToProps, mapDispatchToProps)(Demo);
+  ```
+
+> Tip: **由于对 react 不是很熟，故谈的比较简单，这里推荐参考：[Presentational and Container Components](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0)、[编写有弹性的组件](https://overreacted.io/zh-hans/writing-resilient-components/)**
+
+**[⬆ back to top](#)**
+
+### 23. 项目改造 - 移动端适配
+
+  > 这里我们直接引入 [`postcss-px-to-viewport`](https://github.com/evrone/postcss-px-to-viewport) 插件。
+
+- **安装**
+
+  ```sh
+  $ yarn add -D postcss-px-to-viewport`
+  ```
+
+- **配置**
+
+  ```diff
+  <!-- starter/postcss-config.js -->
+
+    module.exports = {
+      plugins: {
+        autoprefixer: {}
+      },
+      'postcss-reporter': {
+        clearReportedMessages: true,
+        throwError: true
+      },
+  +   'postcss-px-to-viewport': {
+  +     viewportWidth: 375,                           // 设计稿的视口宽度
+  +     viewportHeight: 812,                          // 设计稿的视口高度
+  +     unitPrecision: 5,                             // 单位转换后保留的精度
+  +     viewportUnit: 'vw',                           // 希望使用的视口单位
+  +     fontViewportUnit: 'vw',                       // 字体使用的视口单位
+  +     selectorBlackList: ['.ignore', '.hairlines'], // 需要忽略的CSS选择器，不会转为视口单位，使用原有的px等单位。
+  +     minPixelValue: 1,                             // 设置最小的转换数值，如果为1的话，只有大于1的值会被转换
+  +     mediaQuery: false,                            // 媒体查询里的单位是否需要转换单位
+  +     exclude: [/node_modules/]                     // 需要排除的
+  +   }
+    };
+  ```
+
+- **运行项目，看看效果！**
+
+  ```sh
+    $ yarn server # 运行项目
+
+    # 结果
+
+    $ cross-env NODE_ENV=development webpack-dev-server --color --progress
+    10% building 1/1 modules 0 activeℹ ｢wds｣: Project is running at http://localhost:3000/
+    ℹ ｢wds｣: webpack output is served from /
+    ℹ ｢wds｣: Content not from webpack is served from /Users/mr.lemon/cl/CODE_CL/REACT/starter/public
+    ℹ ｢wds｣: 404s will fallback to /index.html
+    ℹ ｢wdm｣: Compiled successfully.
+  ```
+
+  ![x](https://user-gold-cdn.xitu.io/2019/10/26/16e071a4589397f1?w=375&h=797&f=gif&s=2075019)
+
+  <br>
+
+  > **🔥 Good job！🎉 🔥**
+
+  <br>
+
+  <details>
+    <summary>查看现阶段完整工程目录</summary>
+
+    ```diff
 
 
+    ```
 
-### 22. 数据自造 MOCK
+  </details>
+
+  <br>
+
+> **项目改造到此已基本完成，但后续仍然还有工作要做 💊😯。继续吧！**
+
+**[⬆ back to top](#)**
+
+### 22. 数据自造 mock
 
 **[⬆ back to top](#)**
 
@@ -3254,3 +3422,7 @@ trim_trailing_whitespace = false
 - [Husky](https://github.com/typicode/husky)
 - [Commit message 和 Change log 编写指南](http://www.ruanyifeng.com/blog/2016/01/commit_message_change_log.html)
 - [commitlint](https://github.com/conventional-changelog/commitlint)
+- [Axios](https://github.com/axios/axios)
+- [Presentational and Container Components](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0)
+- [编写有弹性的组件](https://overreacted.io/zh-hans/writing-resilient-components/)
+- [postcss-px-to-viewport](https://github.com/evrone/postcss-px-to-viewport)
