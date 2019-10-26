@@ -1,4 +1,8 @@
 .root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0 60px 0;
   .wh {
     width: 200px;
     height: 180px;

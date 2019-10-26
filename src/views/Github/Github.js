@@ -5,6 +5,7 @@ import Loading from '@/components/Loading/Loading';
 import Empty from '@/components/Empty/Empty';
 import useRequest from '@/containers/useRequest';
 import { searchRepositories } from '@/services/interface/github';
+import emptyData from 'assets/images/empty-data.png';
 
 function Github() {
   const [loading, data] = useRequest(searchRepositories, { q: 'javascript' });
@@ -36,7 +37,7 @@ function Github() {
               language={language}
             />
           ),
-        )) || <Empty />}
+        )) || <Empty url={emptyData} />}
     </div>
   );
 }

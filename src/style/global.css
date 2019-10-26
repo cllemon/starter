@@ -2,11 +2,11 @@
 @import url('../assets/font/iconfont.css');
 
 .app {
-  width: 100%;
+  /* width: 100%;
   height: 100%;
   background: white;
   overflow: auto;
-  position: relative;
+  position: relative; */
 }
 
 .flex-center {
