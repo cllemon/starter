@@ -201,7 +201,7 @@ module.exports = function() {
         'process.env': {
           NODE_ENV: JSON.stringify(process.env.NODE_ENV),
           BASE_URL: IS_MOCK ? '"/"' : '"https://api.github.com/"',
-          PUBLIC_PATH: IS_PROD ? '`/${name}/`' : '"/"',
+          PUBLIC_PATH: !IS_PROD ? JSON.stringify(`/${name}`) : '"/"',
         },
       }),
     ],
