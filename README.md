@@ -3797,6 +3797,85 @@ trim_trailing_whitespace = false
 
 ### 26. 部署上线
 
+#### 分析资源包
+
+  > 在实际项目中，考虑到前端性能（首屏加载，全屏加载，白屏时间）都会对打出的资源包进行分析，然后采取相应的方案进行优化。我们在前面论述打包构建时，已经在多个方面进行说明了，这里不在赘述。
+
+- **[Webpack Bundle Analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer)**
+
+  ```sh
+   # 安装
+   $ yarn add -D webpack-bundle-analyzer # 交互式可缩放树图可视化webpack输出文件的大小。
+  ```
+
+  ```diff
+  # 添加相应配置 starter/webpack.config.js
+
+    ...
+    const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+
+      if (IS_PROD) {
+        ...
+  +     baseConfig.plugins.push(
+  +       new BundleAnalyzerPlugin()
+  +     );
+      }
+
+    ...
+  ```
+
+  ```sh
+  $ yarn build
+
+  # 结果
+
+  $ cross-env NODE_ENV=production webpack --color --progress
+  98% after emitting SizeLimitsPluginWebpack Bundle Analyzer is started at http://127.0.0.1:8888
+  Use Ctrl+C to close it
+  Hash: 3bf5742858f4d53ed50d
+  Version: webpack 4.41.2
+  Time: 3079ms
+  Built at: 2019-10-27 21:43:54
+
+                                      Asset       Size  Chunks                         Chunk Names
+    chunks/bottom-tab-navigator.04852ffb.js   1.54 KiB       0  [emitted] [immutable]  bottom-tab-navigator
+                  chunks/github.a1f67f6e.js   4.65 KiB    1, 3  [emitted] [immutable]  github
+               chunks/not-found.b1d86988.js  576 bytes       3  [emitted] [immutable]  not-found
+                 chunks/setting.34d43c5a.js  673 bytes       4  [emitted] [immutable]  setting
+          chunks/vendors~github.d521d263.js   24.5 KiB       5  [emitted] [immutable]  vendors~github
+  chunks/vendors~github.d521d263.js.LICENSE  120 bytes          [emitted]
+            chunks/vendors~main.89c9b5d2.js    166 KiB       6  [emitted] [immutable]  vendors~main
+    chunks/vendors~main.89c9b5d2.js.LICENSE   1.01 KiB          [emitted]
+      css/bottom-tab-navigator.b9b2f600.css   1.54 KiB       0  [emitted] [immutable]  bottom-tab-navigator
+                    css/github.e0893952.css   1.99 KiB    1, 3  [emitted] [immutable]  github
+                      css/main.09cf98ab.css     11 KiB       2  [emitted] [immutable]  main
+                 css/not-found.091bbea2.css   64 bytes       3  [emitted] [immutable]  not-found
+                   css/setting.42e9f58f.css  252 bytes       4  [emitted] [immutable]  setting
+               fonts/iconfont.63765329.woff   4.58 KiB          [emitted]
+                fonts/iconfont.c2eabadd.ttf   7.52 KiB          [emitted]
+                fonts/iconfont.cad7bb52.eot   7.69 KiB          [emitted]
+             images/empty-data.788c1924.png   11.7 KiB          [emitted]
+                   images/logo.581fa1d8.png   8.38 KiB          [emitted]
+           images/webpage-lost.a02f7942.png   13.5 KiB          [emitted]
+                                 index.html  667 bytes          [emitted]
+                           main.02466eca.js   6.64 KiB       2  [emitted] [immutable]  main
+                  svg/iconfont.1247822e.svg     22 KiB          [emitted]
+
+  Entrypoint main = chunks/vendors~main.89c9b5d2.js css/main.09cf98ab.css main.02466eca.js
+  ```
+
+  ![x](https://user-gold-cdn.xitu.io/2019/10/27/16e0d7bcb3b8804a?w=2864&h=1440&f=png&s=407848)
+
+#### [Travis CI](https://docs.travis-ci.com/)
+
+1. **在实际开发环境中，公司内部都会有一套持续集成的东西帮助我们去部署。这里为了演示方便，我们采用 [Travis CI](https://docs.travis-ci.com/) 帮助我们去做这个事情。**
+
+2. **Travis CI: 代码有变更，自动运行构建和测试，并反馈运行结果。**
+
+3. **如何使用配置？请参考 [持续集成服务 Travis CI 教程](http://www.ruanyifeng.com/blog/2017/12/travis_ci_tutorial.html)**
+
+4. **本项目的 yml 脚本，请参考[项目](https://github.com/cllemon/starter)**
+
 **[⬆ back to top](#)**
 
 ## 参阅
@@ -3893,3 +3972,6 @@ trim_trailing_whitespace = false
 - [babel-jest](https://github.com/facebook/jest/tree/master/packages/babel-jest)
 - [enzyme](https://github.com/airbnb/enzyme)
 - [enzyme-adapter-react-16](https://www.npmjs.com/package/enzyme-adapter-react-16)
+- [webpack-bundle-analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer)
+- [持续集成服务 Travis CI 教程](http://www.ruanyifeng.com/blog/2017/12/travis_ci_tutorial.html)
+- [Travis CI](https://docs.travis-ci.com/)
