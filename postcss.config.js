@@ -1,10 +1,10 @@
 module.exports = {
   plugins: {
-    autoprefixer: {}
+    autoprefixer: {},
   },
   'postcss-reporter': {
     clearReportedMessages: true,
-    throwError: true
+    throwError: true,
   },
   'postcss-px-to-viewport': {
     viewportWidth: 375,
@@ -15,6 +15,6 @@ module.exports = {
     selectorBlackList: ['.ignore', '.hairlines'],
     minPixelValue: 1,
     mediaQuery: false,
-    exclude: [/node_modules/]
-  }
+    exclude: [/node_modules/],
+  },
 };

@@ -8,6 +8,8 @@ const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const SafePostCssParser = require('postcss-safe-parser');
 const IS_PROD = process.env.NODE_ENV === 'production';
+const IS_MOCK = process.env.MOCK === 'true';
+const filterProxy = require('./config/proxy');
 
 module.exports = function() {
   const baseConfig = {
@@ -21,7 +23,7 @@ module.exports = function() {
       path: path.resolve(__dirname, 'dist'),
       publicPath: IS_PROD ? '/starter/' : '/',
       filename: IS_PROD ? '[name].[contenthash:8].js' : '[name].js',
-      chunkFilename: IS_PROD ? 'chunks/[name].[contenthash:8].js' : '[name].js'
+      chunkFilename: IS_PROD ? 'chunks/[name].[contenthash:8].js' : '[name].js',
     },
 
     resolve: {
@@ -29,8 +31,8 @@ module.exports = function() {
         'react-dom': '@hot-loader/react-dom', // react-hot-loader 兼容 hook 写法
         '@': path.resolve(__dirname, 'src'),
         assets: path.resolve(__dirname, 'src/assets'),
-        style: path.resolve(__dirname, 'src/style')
-      }
+        style: path.resolve(__dirname, 'src/style'),
+      },
     },
 
     // externals: {
@@ -50,15 +52,15 @@ module.exports = function() {
               loader: 'eslint-loader',
               options: {
                 cache: false,
-                fix: true
-              }
-            }
-          ]
+                fix: true,
+              },
+            },
+          ],
         },
         {
           test: /\.(js|jsx)$/,
           exclude: /node_modules/,
-          loader: 'babel-loader'
+          loader: 'babel-loader',
         },
         {
           test: /\.(sa|sc)ss$/,
@@ -66,7 +68,7 @@ module.exports = function() {
           use: [
             {
               loader: IS_PROD ? MiniCssExtractPlugin.loader : 'style-loader',
-              options: IS_PROD ? { publicPath: '../' } : {}
+              options: IS_PROD ? { publicPath: '../' } : {},
             },
             {
               loader: 'css-loader',
@@ -75,20 +77,20 @@ module.exports = function() {
                 importLoaders: 2,
                 modules: {
                   context: path.resolve(__dirname, 'src'),
-                  localIdentName: '[name]__[local]-[hash:base64:5]'
-                }
-              }
+                  localIdentName: '[name]__[local]-[hash:base64:5]',
+                },
+              },
             },
             {
-              loader: 'postcss-loader'
+              loader: 'postcss-loader',
             },
             {
               loader: 'sass-loader',
               options: {
-                sourceMap: !IS_PROD
-              }
-            }
-          ]
+                sourceMap: !IS_PROD,
+              },
+            },
+          ],
         },
         {
           test: /\.css$/,
@@ -96,16 +98,16 @@ module.exports = function() {
           use: [
             {
               loader: IS_PROD ? MiniCssExtractPlugin.loader : 'style-loader',
-              options: IS_PROD ? { publicPath: '../' } : {}
+              options: IS_PROD ? { publicPath: '../' } : {},
             },
             {
               loader: 'css-loader',
               options: {
-                sourceMap: !IS_PROD
-              }
+                sourceMap: !IS_PROD,
+              },
             },
-            'postcss-loader'
-          ]
+            'postcss-loader',
+          ],
         },
         {
           test: /\.(png|jpe?g|gif|webp)(\?.*)?$/,
@@ -117,12 +119,12 @@ module.exports = function() {
                 fallback: {
                   loader: 'file-loader',
                   options: {
-                    name: 'images/[name].[hash:8].[ext]'
-                  }
-                }
-              }
-            }
-          ]
+                    name: 'images/[name].[hash:8].[ext]',
+                  },
+                },
+              },
+            },
+          ],
         },
         {
           test: /\.(svg)(\?.*)?$/,
@@ -130,10 +132,10 @@ module.exports = function() {
             {
               loader: 'file-loader',
               options: {
-                name: 'svg/[name].[hash:8].[ext]'
-              }
-            }
-          ]
+                name: 'svg/[name].[hash:8].[ext]',
+              },
+            },
+          ],
         },
         {
           test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/i,
@@ -145,12 +147,12 @@ module.exports = function() {
                 fallback: {
                   loader: 'file-loader',
                   options: {
-                    name: 'fonts/[name].[hash:8].[ext]'
-                  }
-                }
-              }
-            }
-          ]
+                    name: 'fonts/[name].[hash:8].[ext]',
+                  },
+                },
+              },
+            },
+          ],
         },
         {
           test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
@@ -162,14 +164,14 @@ module.exports = function() {
                 fallback: {
                   loader: 'file-loader',
                   options: {
-                    name: 'media/[name].[hash:8].[ext]'
-                  }
-                }
-              }
-            }
-          ]
-        }
-      ]
+                    name: 'media/[name].[hash:8].[ext]',
+                  },
+                },
+              },
+            },
+          ],
+        },
+      ],
     },
 
     plugins: [
@@ -183,24 +185,24 @@ module.exports = function() {
               collapseWhitespace: true,
               removeAttributeQuotes: true,
               collapseBooleanAttributes: true,
-              removeScriptTypeAttributes: true
+              removeScriptTypeAttributes: true,
             }
-          : {}
+          : {},
       }),
       new MiniCssExtractPlugin({
         filename: IS_PROD ? 'css/[name].[contenthash:8].css' : 'css/[name].css',
         chunkFilename: IS_PROD
           ? 'css/[name].[contenthash:8].css'
-          : 'css/[name].css'
+          : 'css/[name].css',
       }),
       new CleanWebpackPlugin(),
       new webpack.DefinePlugin({
         'process.env': {
           NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-          BASE_URL: IS_PROD ? `"/"` : '"/"'
-        }
-      })
-    ]
+          BASE_URL: IS_MOCK ? '"/"' : '"https://api.github.com/"',
+        },
+      }),
+    ],
   };
 
   if (IS_PROD) {
@@ -220,7 +222,7 @@ module.exports = function() {
               // to apply any minification steps that turns valid ecma 5 code
               // into invalid ecma 5 code. This is why the 'compress' and 'output'
               // sections only apply transformations that are ecma 5 safe
-              ecma: 8
+              ecma: 8,
             },
             compress: {
               ecma: 5,
@@ -233,12 +235,12 @@ module.exports = function() {
               // inline calls to function with simple/return statement:
               // Disabled because of an issue with Terser breaking valid code:
               // Pending further investigation: https://github.com/terser-js/terser/issues/120
-              inline: 2 // inline functions with arguments
+              inline: 2, // inline functions with arguments
             },
             mangle: {
               // Pass true to work around the Safari 10 loop iterator bug "Cannot declare a let variable twice".
               // See also: the safari10 output option.
-              safari10: true
+              safari10: true,
             },
             // Added for profiling in devtools
             keep_classnames: true,
@@ -250,13 +252,13 @@ module.exports = function() {
               comments: false,
               // escape Unicode characters in strings and regexps (affects directives with non-ascii characters becoming invalid)
               // Turned on because emoji and regex is not minified properly using default
-              ascii_only: true
-            }
+              ascii_only: true,
+            },
           },
           // Use multi-process parallel running to improve the build speed.
           //Default number of concurrent runs: os.cpus().length - 1.
           parallel: true,
-          cache: true // Enable file caching
+          cache: true, // Enable file caching
         }),
         new OptimizeCSSAssetsPlugin({
           // The options passed to the cssProcessor, defaults to {}
@@ -265,13 +267,13 @@ module.exports = function() {
           //               (receives a CSS and options parameters and returns a Promise).
           cssProcessorOptions: {
             parser: SafePostCssParser, // 查找并修复CSS语法错误。
-            map: false
-          }
-        })
+            map: false,
+          },
+        }),
       ],
       splitChunks: {
-        chunks: 'all'
-      }
+        chunks: 'all',
+      },
     };
   }
 
@@ -286,6 +288,7 @@ module.exports = function() {
       hot: true,
       host: '0.0.0.0',
       useLocalIp: true,
+      proxy: filterProxy({ IS_MOCK }),
     };
     baseConfig.plugins.concat([new webpack.HotModuleReplacementPlugin()]);
   }
