@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const { name } = require('./package.json');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
@@ -21,7 +22,7 @@ module.exports = function() {
 
     output: {
       path: path.resolve(__dirname, 'dist'),
-      publicPath: IS_PROD ? '/starter/' : '/',
+      publicPath: IS_PROD ? `/${name}/` : '/',
       filename: IS_PROD ? '[name].[contenthash:8].js' : '[name].js',
       chunkFilename: IS_PROD ? 'chunks/[name].[contenthash:8].js' : '[name].js',
     },
@@ -200,6 +201,7 @@ module.exports = function() {
         'process.env': {
           NODE_ENV: JSON.stringify(process.env.NODE_ENV),
           BASE_URL: IS_MOCK ? '"/"' : '"https://api.github.com/"',
+          PUBLIC_PATH: IS_PROD ? '`/${name}/`' : '"/"',
         },
       }),
     ],

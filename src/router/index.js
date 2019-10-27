@@ -29,7 +29,7 @@ function RouterView(route) {
 
 export default function Router() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={process.env.PUBLIC_PATH}>
       <Switch>
         {routes.map(route => (
           <RouterView key={route.path} {...route} />
