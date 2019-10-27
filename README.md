@@ -3429,11 +3429,226 @@ trim_trailing_whitespace = false
 
 **[⬆ back to top](#)**
 
-### 24. 数据自造 mock
+### 24. 前后端分离 mock
+
+  > 前后端分离，让前端脱离后台独立开发，mock 起了很大的作用。在实际业务开发中，我们需要一种能不侵入现有代码，即可拦截请求，返回模拟数据。 我们利用 [json-server](https://github.com/typicode/json-server) 帮助我们完成这个需求。
+
+- **安装**
+
+  ```sh
+  $ yarn add -D json-server
+  ```
+
+- **新建 mock 文件夹**
+
+  ```sh
+  $ mkdir mock
+  $ cd mock && touch index.js
+  $ mkdir interface && cd interface
+  $ touch index.js && touch github.js
+  ```
+
+  ```js
+  // starter/mock/index.js
+  const data = require('./interface/index');
+  module.exports = function Mock() {
+    return data;
+  };
+
+  // starter/mock/interface/index.js
+  const github = require('./github');
+  module.exports = {
+    ...github,
+  };
+
+  // starter/mock/interface/github.js
+  const repositories = {
+    "items": [
+      {
+        "id": 6498492,
+        "name": "javascript",
+        "full_name": "airbnb/javascript",
+        "owner": {
+          "login": "airbnb",
+          "id": 698437,
+          "avatar_url": "https://avatars3.githubusercontent.com/u/698437?v=4",
+        },
+        "description": "JavaScript Style Guide",
+        "size": 3002,
+        "stargazers_count": 89966,
+        "watchers_count": 89966,
+        "language": "JavaScript",
+        "forks_count": 17404,
+        "open_issues_count": 110,
+        "license": {
+          "key": "mit",
+          "name": "MIT License",
+        },
+        "forks": 17404,
+        "open_issues": 110,
+        "watchers": 89966,
+        "default_branch": "master",
+        "score": 151.055
+      },
+      {
+        "id": 18286232,
+        "name": "javascript",
+        "full_name": "GitbookIO/javascript",
+        "private": false,
+        "owner": {
+          "login": "GitbookIO",
+          "id": 7111340,
+          "avatar_url": "https://avatars0.githubusercontent.com/u/7111340?v=4",
+        },
+        "description": "GitBook teaching programming basics with Javascript",
+        "size": 1267,
+        "stargazers_count": 1923,
+        "watchers_count": 1923,
+        "language": "javascript",
+        "forks_count": 730,
+        "open_issues_count": 43,
+        "license": {
+          "key": "apache-2.0",
+          "name": "Apache License 2.0",
+        },
+        "forks": 730,
+        "open_issues": 43,
+        "watchers": 1923,
+        "default_branch": "master",
+        "score": 104.4313
+      },
+    ]
+  }
+
+  module.exports = {
+    repositories
+  };
+  ```
+
+  > 数据来源于 GitHub ，这里只做演示，故直接贴出数据。如果你需要动态生成数据，可以引入 [mockjs](http://mockjs.com/) 帮助你生成数据。这里就不做赘述了！
+
+- **配置快捷命令 starter/package.json**
+
+  ```diff
+    ...
+    {
+      "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "server": "cross-env NODE_ENV=development webpack-dev-server --color --progress",
+  +     "server:mock": "npm run mock & cross-env NODE_ENV=development MOCK=true webpack-dev-server --color --progress",
+  +     "mock": "json-server mock/index.js --watch --port 3001",
+        "build": "cross-env NODE_ENV=production webpack --color --progress",
+        "lint": "npm run lint:style && npm run lint:script",
+        "lint-fix": "npm run lint-fix:style && npm run lint-fix:script",
+        "lint:script": "eslint --ext '.js,.jsx' src",
+        "lint-fix:script": "npm run lint:script -- --fix",
+        "lint:style": "stylelint 'src/**/*.css' 'src/**/*.scss' --syntax scss",
+        "lint-fix:style": " npm run lint:style -- --fix",
+        "prettier": "prettier --check --write 'src/**/*.{js,jsx,scss,css}' --config ./.prettierrc"
+      },
+    }
+    ...
+  ```
+
+- **配置 dev-server 代理**
+
+  ```sh
+  # 新建代理文件
+
+  $ cd ../.. && mkdir config
+  $ cd config && touch proxy.js
+  ```
+
+  ```js
+  // starter/config/proxy.js
+
+  /**
+   * @desc mock 服务代理配置
+   */
+  const MOCK_SERVER_PROXY = {
+    '/search/*': {
+      target: 'http://localhost:3001/$1',
+    }
+  }
+
+  /**
+   * @desc 默认服务代理
+   */
+  const DEFAULT_PROXY = {};
+
+  /**
+   * @desc dev-server 代理配置
+   * @param {Boolean} IS_MOCK mock 标识
+   * @param {Object} Proxy
+   */
+  module.exports = function({ IS_MOCK }) {
+    if (IS_MOCK) return MOCK_SERVER_PROXY;
+    return DEFAULT_PROXY;
+  }
+  ```
+
+  > 具体如何配置代理，根据接口自定！更多请参考 [`devServer - proxy`](https://webpack.docschina.org/configuration/dev-server/#devserver-proxy)
+
+  ```diff
+    # starter/webpack.config.js
+
+    ...
+  + const IS_MOCK = process.env.MOCK === 'true';
+  + const filterProxy = require('./config/proxy');
+
+      ...
+
+        baseConfig.devServer = {
+          ...
+  +       proxy: filterProxy({ IS_MOCK })
+        }
+
+    ...
+  ```
+
+- **运行项目**
+
+  ```sh
+  $ yarn server:mock
+
+  # 结果
+
+  $ npm run mock & cross-env NODE_ENV=development MOCK=true webpack-dev-server --color --progress
+
+  > starter@1.0.0 mock /Users/mr.lemon/cl/CODE_CL/REACT/starter
+  > json-server mock/index.js --watch --port 3001
+
+    \{^_^}/ hi!
+
+    Loading mock/index.js
+    Done
+
+    Resources
+    http://localhost:3001/repositories
+
+    Home
+    http://localhost:3001
+
+    Type s + enter at any time to create a snapshot of the database
+    Watching...
+
+  10% building 1/1 modules 0 activeℹ ｢wds｣: Project is running at http://192.168.0.102:3000/
+  ℹ ｢wds｣: webpack output is served from /
+  ℹ ｢wds｣: Content not from webpack is served from /Users/mr.lemon/cl/CODE_CL/REACT/starter/public
+  ℹ ｢wds｣: 404s will fallback to /index.html
+  ℹ ｢wdm｣: Compiled successfully.
+  ```
+
+  ![x](https://user-gold-cdn.xitu.io/2019/10/27/16e0b714da2fedd5?w=1994&h=1238&f=png&s=68149)
+  ![x](https://user-gold-cdn.xitu.io/2019/10/27/16e0b718e6eec7a5?w=2098&h=1386&f=png&s=120439)
+
+> **以上仅仅阐述了 mock 这一环, 关于前后端分离这里推荐一个知乎问答 [Web 前后端分离的意义大吗？](https://www.zhihu.com/question/28207685)**
 
 **[⬆ back to top](#)**
 
 ### 25. 单元测试 jest
+
+> 单元测试是用来对一个模块、一个函数或者一个类来进行正确性检验的测试工作。
 
 **[⬆ back to top](#)**
 
@@ -3529,3 +3744,5 @@ trim_trailing_whitespace = false
 - [Presentational and Container Components](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0)
 - [编写有弹性的组件](https://overreacted.io/zh-hans/writing-resilient-components/)
 - [postcss-px-to-viewport](https://github.com/evrone/postcss-px-to-viewport)
+- [json-server](https://github.com/typicode/json-server)
+- [mockjs](http://mockjs.com/)
