@@ -2,12 +2,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100px;
-  height: 80px;
+  width: 130px;
+  height: 60px;
   border-radius: 10px;
   background: black;
   opacity: .6;
   .title {
-    color: #909399;
+    color: #fff;
+    font-size: 13px;
+    margin-left: 10px;
+    font-weight: 300;
   }
 }

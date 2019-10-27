@@ -1,6 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import styles from './Setting.scss';
+import Loading from '@/components/Loading/Loading';
 
 function Setting() {
   const history = useHistory();
@@ -18,6 +19,7 @@ function Setting() {
       <button type="button" onClick={handleClick}>
         Go github
       </button>
+      <Loading />
     </div>
   );
 }
