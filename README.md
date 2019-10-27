@@ -3646,9 +3646,152 @@ trim_trailing_whitespace = false
 
 **[⬆ back to top](#)**
 
-### 25. 单元测试 jest
+### 25. 单元测试 [jest](https://jestjs.io/)
 
-> 单元测试是用来对一个模块、一个函数或者一个类来进行正确性检验的测试工作。
+> 单元测试是用来对一个模块、一个函数或者一个类来进行正确性检验的测试工作。业内优秀的测试框架很多，这里直接选择 [jest](https://jestjs.io/)。
+
+- **安装**
+
+  ```sh
+  $ yarn add -D jest                    # Jest is a delightful JavaScript Testing Framework with a focus on simplicity.
+  $ yarn add -D babel-jest              # Jest plugin to use babel for transformation
+  $ yarn add -D enzyme                  # 一种用于 React 的 JavaScript 测试实用程序，可以更轻松地测试 React 组件的输出。您还可以操纵，遍历并以某种方式模拟给定输出的运行时。
+  $ yarn add -D enzyme-adapter-react-16 # react 16 适配器
+  $ yarn add -D identity-obj-proxy      # 模拟一个代理以启用 className 查找
+  ```
+
+- **新建用于存放测试用例的文件夹及 jest 配置文件**
+
+  ```sh
+  $ touch jest.config.js
+  $ cd src && mkdir __tests__
+  $ cd __tests__
+  $ mkdir __mocks__ && mkdir ui && touch setup.js
+  $ cd __mocks__ && touch fileMock.js
+  $ cd ../ui && touch Loading.spec.js
+  ```
+
+- **配置 jest**
+
+  ```js
+  <!-- starter/jest.config.js -->
+
+  module.exports = {
+    testRegex: '(\\.)(test|spec)(\\.)jsx?$',
+    // 处理静态文件
+    // 样式表和图像等，这些文件在测试中无足轻重，因为我们可以安全地 mock 他们。
+    // 模拟 CSS 模块，用类名查找模拟一个代理
+    moduleNameMapper: {
+      '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
+        '<rootDir>/src/__tests__/__mocks__/fileMock.js',
+      '\\.(css|scss|sass)$': 'identity-obj-proxy',
+      '^@/(.*)$': '<rootDir>/src/$1'
+    },
+    // 为转换源文件提供同步功能的模块
+    transform: {
+      '^.+\\.(js|jsx)$': 'babel-jest'
+    },
+    // 在每次测试之前配置或设置测试环境
+    setupFiles: ['<rootDir>/src/__tests__/setupTests.js']
+  };
+
+  <!-- starter/src/__tests__/__mocks__/fileMock.js -->
+
+  module.exports = 'test-file-stub';
+  ```
+
+- **注册 enzyme 适配器配置**
+
+  ```js
+  // starter/src/__tests__/setup.js
+
+  import enzyme from 'enzyme';
+  import Adapter from 'enzyme-adapter-react-16';
+
+  enzyme.configure({ adapter: new Adapter() });
+  ```
+
+- **配置快捷运行命令**
+
+  ```diff
+  <!-- starter/package.json -->
+
+    {
+      ...
+
+      "scripts": {
+  -     "test": "echo \"Error: no test specified\" && exit 1",
+  +     "test": "jest --config jest.config.js --no-cache",
+        "server": "cross-env NODE_ENV=development webpack-dev-server --color --progress",
+        "server:mock": "npm run mock & cross-env NODE_ENV=development MOCK=true webpack-dev-server --color --progress",
+        "mock": "json-server mock/index.js --watch --port 3001",
+        "build": "cross-env NODE_ENV=production webpack --color --progress",
+        "lint": "npm run lint:style && npm run lint:script",
+        "lint-fix": "npm run lint-fix:style && npm run lint-fix:script",
+        "lint:script": "eslint --ext '.js,.jsx' src",
+        "lint-fix:script": "npm run lint:script -- --fix",
+        "lint:style": "stylelint 'src/**/*.css' 'src/**/*.scss' --syntax scss",
+        "lint-fix:style": " npm run lint:style -- --fix",
+        "prettier": "prettier --check --write 'src/**/*.{js,jsx,scss,css}' --config ./.prettierrc"
+      },
+
+      ...
+
+    }
+  ```
+
+- **编写测试用例**
+
+  ```js
+  import React from 'react';
+  import { shallow } from 'enzyme';
+  import Loading from '../../components/Loading/Loading';
+
+  describe('Loading 组件基础测试组合！', () => {
+    it('<Loading /> 组件默认标题应该是 "loading..."', () => {
+      const loading = shallow(<Loading />);
+      expect(loading.find('span').text()).toBe('loading...');
+    });
+    it('<Loading /> 组件标题应该是 "加载中..."', () => {
+      const loading = shallow(<Loading title='加载中...' />);
+      expect(loading.find('span').text()).toBe('加载中...');
+    });
+  });
+  ```
+
+  > 这里的用例只做演示，在实际开发中要严格根据 UI 组件的功能编写用例。
+
+- **运行测试**
+
+  ```sh
+  $ yarn test
+
+  # 结果
+
+  $ jest --config jest.config.js --no-cache
+   PASS  src/__tests__/ui/Loading.spec.js
+    Loading 组件基础测试组合！
+      ✓ <Loading /> 组件默认标题应该是 "loading..." (7ms)
+      ✓ <Loading /> 组件标题应该是 "加载中..." (1ms)
+
+  Test Suites: 1 passed, 1 total
+  Tests:       2 passed, 2 total
+  Snapshots:   0 total
+  Time:        1.66s
+  Ran all test suites.
+  ✨  Done in 2.44s.
+  ```
+
+- **说明**
+
+  1. 编写测试用例很重要！以上仅仅论述了如何接入 jest 具体根据实际需求去写。
+  2. 建议集中在私有工具函数及 UI 组件；至于业务，变动性太大就不建议写了！
+  3. 关于测试用例，可参考行业内一些UI组件库，如：[element-UI](https://github.com/ElemeFE/element/blob/dev/test/unit/specs/alert.spec.js)、[antd](https://github.com/ant-design/ant-design/blob/master/tests/index.test.js)
+  4. 推荐一篇文章 [前端单元测试实践](https://zhuanlan.zhihu.com/p/55960017?utm_source=wechat_session&utm_medium=social&utm_oi=805028452691488768)
+
+  <br>
+
+  > **try it!** 🍁
 
 **[⬆ back to top](#)**
 
@@ -3746,3 +3889,7 @@ trim_trailing_whitespace = false
 - [postcss-px-to-viewport](https://github.com/evrone/postcss-px-to-viewport)
 - [json-server](https://github.com/typicode/json-server)
 - [mockjs](http://mockjs.com/)
+- [jest](https://jestjs.io/)
+- [babel-jest](https://github.com/facebook/jest/tree/master/packages/babel-jest)
+- [enzyme](https://github.com/airbnb/enzyme)
+- [enzyme-adapter-react-16](https://www.npmjs.com/package/enzyme-adapter-react-16)
