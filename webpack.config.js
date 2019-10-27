@@ -8,6 +8,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const SafePostCssParser = require('postcss-safe-parser');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const IS_PROD = process.env.NODE_ENV === 'production';
 const IS_MOCK = process.env.MOCK === 'true';
 const filterProxy = require('./config/proxy');
@@ -201,7 +202,7 @@ module.exports = function() {
         'process.env': {
           NODE_ENV: JSON.stringify(process.env.NODE_ENV),
           BASE_URL: IS_MOCK ? '"/"' : '"https://api.github.com/"',
-          PUBLIC_PATH: !IS_PROD ? JSON.stringify(`/${name}`) : '"/"',
+          PUBLIC_PATH: IS_PROD ? JSON.stringify(`/${name}`) : '"/"',
         },
       }),
     ],
@@ -277,6 +278,9 @@ module.exports = function() {
         chunks: 'all',
       },
     };
+    baseConfig.plugins.push(
+      new BundleAnalyzerPlugin()
+    );
   }
 
   if (!IS_PROD) {
