@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
 import routes from './list';
 
 function RouterView(route) {
@@ -29,12 +29,12 @@ function RouterView(route) {
 
 export default function Router() {
   return (
-    <BrowserRouter basename={process.env.PUBLIC_PATH}>
+    <HashRouter basename={process.env.PUBLIC_PATH}>
       <Switch>
         {routes.map(route => (
           <RouterView key={route.path} {...route} />
         ))}
       </Switch>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
