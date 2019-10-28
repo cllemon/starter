@@ -28,7 +28,6 @@ function RouterView(route) {
 }
 
 export default function Router() {
-  console.warn(process.env, 'router message!');
   return (
     <BrowserRouter basename={process.env.PUBLIC_PATH}>
       <Switch>
