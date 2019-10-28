@@ -1,6 +1,8 @@
-# starter
+<h1 align="center">Starter</h1>
 
-  web应用程序的工程构建清单
+<div align="center">✨ web 应用程序的工程构建清单</div>
+
+JavaScript | [TypeScript](https://github.com/cllemon/starter/tree/dev)
 
 ## 说明
 
@@ -25,7 +27,7 @@
 - [1. 版本管理（git）](#1-版本管理[git])
 - [2. Create a local `.gitignore`](#2-create-a-local-gitignore)
 - [3. node、npm 和 yarn](#3-node、npm-和-yarn)
-- [初始工程目录 与 `package.json` 的信息 ✅](#初始工程目录-与-packagejson-的信息-✅)
+  - [初始工程目录 与 `package.json` 的信息 ✅](#初始工程目录-与-packagejson-的信息-✅)
 - [4. editorconfig](#4-editorconfig)
 - [5. browserslist](#5-browserslist)
 - [6. 引入 webpack](#6-引入-webpack)
@@ -82,7 +84,7 @@ $ 如何使用 ？
 # https://git-scm.com/doc || git --help
 ```
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 ### 2. [Create a local](https://help.github.com/en/articles/ignoring-files) `.gitignore`
 
@@ -112,7 +114,7 @@ yarn-error.log*
 .vscode
 ```
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 ### 3. [node](http://nodejs.cn/)、[npm]([node.js](http://nodejs.cn/)) 和 [yarn](https://yarn.bootcss.com/)
 
@@ -162,7 +164,7 @@ $ 初始化项目
 # mkdir starter && npm init
 ```
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 #### `初始工程目录` 与 `package.json` 的信息 ✅
 
@@ -205,7 +207,7 @@ $ 初始化项目
 
 > 注意：以下描述中所有的包安装都采用 `yarn` 命令
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 ### 4. [editorconfig]( http://editorconfig.org)
 
@@ -233,7 +235,7 @@ insert_final_newline = false
 trim_trailing_whitespace = false
 ```
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 ### 5. [browserslist](https://github.com/browserslist/browserslist)
 
@@ -282,7 +284,7 @@ trim_trailing_whitespace = false
     last 1 safari version
   ```
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 ### 6. [引入 webpack](https://webpack.docschina.org/guides/)
 
@@ -312,7 +314,7 @@ trim_trailing_whitespace = false
     └── README.md
   ```
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 ### 7. [引入 React](https://github.com/facebook/react/)
 
@@ -368,7 +370,7 @@ trim_trailing_whitespace = false
 
 > 注意：由于浏览器不支持最新的 JavaScript 语法和 react jsx 的语法解析，所以我们需要一个编译器帮助我们。
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 ### 8. [引入 Babel](https://babel.docschina.org/)
 
@@ -484,7 +486,7 @@ trim_trailing_whitespace = false
   + └── yarn.lock
   ```
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 ### 9. [搭建开发环境 - 借助 webpack-dev-server](https://webpack.docschina.org/configuration/dev-server/)
 
@@ -590,7 +592,7 @@ trim_trailing_whitespace = false
 
   > 带着这些问题，继续吧！👍
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 ### 10. [搭建开发环境 - 环境变量](https://webpack.docschina.org/guides/environment-variables/)
 
@@ -670,7 +672,7 @@ trim_trailing_whitespace = false
     };
   ```
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 ### 11. [搭建开发环境 - 热替换模块(Hot Module Replacement)](https://webpack.docschina.org/plugins/hot-module-replacement-plugin/)
 
@@ -796,7 +798,7 @@ trim_trailing_whitespace = false
 
   > 带着这个问题，继续吧！✈️
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 ### 12. [搭建开发环境 - 热替换模块 - 引入 react-hot-loader](https://github.com/gaearon/react-hot-loader)
 
@@ -916,7 +918,7 @@ trim_trailing_whitespace = false
   1. 至此一个简易的开发环境，就这样被搭建出来了。🐃
   2. 后面的工作还很多，继续吧！🍺
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 ### 13. 引入 CSS 与 [Sass](http://sass.bootcss.com/docs/sass-reference/) 样式文件处理
 
@@ -1063,7 +1065,7 @@ trim_trailing_whitespace = false
 
   > 那继续吧！💪
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 ### 14. [CSS-Modules](https://github.com/css-modules/css-modules) 与 [autoprefixer](https://github.com/postcss/autoprefixer)
 
@@ -1211,7 +1213,7 @@ trim_trailing_whitespace = false
 
   ![x](https://user-gold-cdn.xitu.io/2019/10/21/16dec36f23e2e8d6?w=1020&h=623&f=jpeg&s=72261)
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 ### 15. 更进一步，构建我们的应用 `yarn build`
 
@@ -1244,7 +1246,7 @@ trim_trailing_whitespace = false
 
   > 我们看到这只打出一个 `bundle.js` 这显然做的还不够。接下来，我们做几点改变！
 
-  **[⬆ back to top](#)**
+  **[⬆ back to top](##目录)**
 
 #### 管理输出
 
@@ -1379,7 +1381,7 @@ trim_trailing_whitespace = false
 
   > 注：如果你仔细看了我们的输出，你会发现 `main.2f781ad1.js size=136KiB`, 而我们的代码却量却很少，如果你打开该文件你会发现它包含了 `react.production.min.js` `babel` 所需的帮助函数等。
 
-  **[⬆ back to top](#)**
+  **[⬆ back to top](##目录)**
 
 #### 代码分离
 
@@ -1503,7 +1505,7 @@ trim_trailing_whitespace = false
 
   > 试试看👀，清理干净了 (｡･∀･)ﾉﾞ **Try it!**
 
-  **[⬆ back to top](#)**
+  **[⬆ back to top](##目录)**
 
 ####  防止重复
 
@@ -1560,7 +1562,7 @@ trim_trailing_whitespace = false
 
   > [webpack 4: Code Splitting, chunk graph and the splitChunks optimization](https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366)
 
-  **[⬆ back to top](#)**
+  **[⬆ back to top](##目录)**
 
 - **[@babel/plugin-transform-runtime](https://babeljs.io/docs/en/babel-plugin-transform-runtime) 一个插件，可重新使用Babel注入的帮助程序代码以节省代码大小。**
 
@@ -1604,7 +1606,7 @@ trim_trailing_whitespace = false
     # 可以比对上次构建结果，主文件减少了一些。
   ```
 
-  **[⬆ back to top](#)**
+  **[⬆ back to top](##目录)**
 
 - **[webpack.DefinePlugin](https://webpack.docschina.org/plugins/define-plugin/#%E7%94%A8%E6%B3%95) 允许创建一个在编译时可以配置的全局常量**
 
@@ -1631,7 +1633,7 @@ trim_trailing_whitespace = false
 
   > 这里如果你的代码没有对区分环境，做特定处理（去除开发环境下的代码）则，包尺寸不变。
 
-  **[⬆ back to top](#)**
+  **[⬆ back to top](##目录)**
 
 #### minify JavaScript / css
 
@@ -1691,7 +1693,7 @@ trim_trailing_whitespace = false
 
   > 参考：[为什么 webpack4 默认支持 ES6 语法的压缩？](https://juejin.im/post/5d706172f265da03ca118d28)
 
-  **[⬆ back to top](#)**
+  **[⬆ back to top](##目录)**
 
 - **[terser-webpack-plugin](https://github.com/webpack-contrib/terser-webpack-plugin)**
 
@@ -1789,7 +1791,7 @@ trim_trailing_whitespace = false
     Entrypoint main = chunks/vendors~main.ae62441b.js css/main.f9cee851.css main.2130b172.js
   ```
 
-  **[⬆ back to top](#)**
+  **[⬆ back to top](##目录)**
 
 - **[optimize-css-assets-webpack-plugin](https://github.com/NMFR/optimize-css-assets-webpack-plugin) - 优化/减少CSS资产**
 
@@ -1851,7 +1853,7 @@ trim_trailing_whitespace = false
     Entrypoint main = chunks/vendors~main.ae62441b.js css/main.f9cee851.css main.2130b172.js
   ```
 
-  **[⬆ back to top](#)**
+  **[⬆ back to top](##目录)**
 
 #### 外部扩展([externals](https://webpack.docschina.org/configuration/externals/#src/components/Sidebar/Sidebar.jsx))
 
@@ -1917,7 +1919,7 @@ trim_trailing_whitespace = false
   > **3. 为提高访问速度，最好把前端不常更新的类库，如，react、react-dom、axios、moment等从输出的 bundle 中排除依赖**<br>
   > **4. 提示，最好自己弄个，用自己的总是来得保险一些 🤡**
 
-  **[⬆ back to top](#)**
+  **[⬆ back to top](##目录)**
 
 #### 工程目录
 
@@ -1954,7 +1956,7 @@ trim_trailing_whitespace = false
   1. 至此整个构建过程和构建过程中所做的优化点都已经大致论述完毕，当然不足之处还有一些。📚
   2. 离完整的工程还有很多工作要做，继续吧！🔥👇🔥
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 ### 16. 引入路由
 
@@ -2058,7 +2060,7 @@ trim_trailing_whitespace = false
 
     > 这里的命名你可以随意创建🙄
 
-  **[⬆ back to top](#)**
+  **[⬆ back to top](##目录)**
 
 - **新建 Setting、GitHub 页面，并编写**
 
@@ -2213,7 +2215,7 @@ trim_trailing_whitespace = false
 
   > 做点改进吧️ ⚓️
 
-  **[⬆ back to top](#)**
+  **[⬆ back to top](##目录)**
 
 ### 17. [管理资源](https://webpack.docschina.org/guides/asset-management/#%E5%8A%A0%E8%BD%BD-images-%E5%9B%BE%E5%83%8F)、优化[模块解析](https://webpack.docschina.org/configuration/resolve/#resolve-alias)
 
@@ -2355,7 +2357,7 @@ trim_trailing_whitespace = false
 
   1. **随着项目复杂度递增，当打包构建应用时，JavaScript 包会变得非常大，影响页面加载。如果我们能把不同路由对应的组件分割成不同的代码块，然后当路由被访问的时候才加载对应组件，这样就更加高效了。**
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 ### 18. 路由懒加载 [@loadable/component](https://github.com/smooth-code/loadable-components)
 
@@ -2485,7 +2487,7 @@ trim_trailing_whitespace = false
 
   **到此，我们已经把路由功能添加，继续后续工作吧！🚘**
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 ### 19. **编码规范**
 
@@ -2656,7 +2658,7 @@ trim_trailing_whitespace = false
 
   <br>
 
-  **[⬆ back to top](#)**
+  **[⬆ back to top](##目录)**
 
   <br>
 
@@ -2791,7 +2793,7 @@ trim_trailing_whitespace = false
 
   <br>
 
-  **[⬆ back to top](#)**
+  **[⬆ back to top](##目录)**
 
   <br>
 
@@ -2934,7 +2936,7 @@ trim_trailing_whitespace = false
 
   <br>
 
-  **[⬆ back to top](#)**
+  **[⬆ back to top](##目录)**
 
   <br>
 
@@ -2986,7 +2988,7 @@ trim_trailing_whitespace = false
 
   <br>
 
-  **[⬆ back to top](#)**
+  **[⬆ back to top](##目录)**
 
   <br>
 
@@ -3010,7 +3012,7 @@ trim_trailing_whitespace = false
 
   <br>
 
-  **[⬆ back to top](#)**
+  **[⬆ back to top](##目录)**
 
   <br>
 
@@ -3142,7 +3144,7 @@ trim_trailing_whitespace = false
 
   > **我们在改造 Github 页面, 在组件内部调用了请求方法，并对请求做了统一封装，在继续改造工作之前，我们先来看看 *前后端交互***
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 ### 21. 前后端交互 [Axios](https://github.com/axios/axios)
 
@@ -3225,7 +3227,7 @@ trim_trailing_whitespace = false
 
   > **上述简单封装核心请求方法，分离接口等，主要目的是辅助论述，当然，这还很简单，你可以自己根据实际需要做更全面的封装！**
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 ### 22. 项目改造 - 组件
 
@@ -3301,7 +3303,7 @@ trim_trailing_whitespace = false
 
 > Tip: **由于对 react 不是很熟，故谈的比较简单，这里推荐参考：[Presentational and Container Components](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0)、[编写有弹性的组件](https://overreacted.io/zh-hans/writing-resilient-components/)**
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 ### 23. 项目改造 - 移动端适配
 
@@ -3476,7 +3478,7 @@ trim_trailing_whitespace = false
 
 > **项目改造到此已基本完成，但后续仍然还有工作要做 💊😯。继续吧！**
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 ### 24. 前后端分离 mock
 
@@ -3693,7 +3695,7 @@ trim_trailing_whitespace = false
 
 > **以上仅仅阐述了 mock 这一环, 关于前后端分离这里推荐一个知乎问答 [Web 前后端分离的意义大吗？](https://www.zhihu.com/question/28207685)**
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 ### 25. 单元测试 [jest](https://jestjs.io/)
 
@@ -3842,7 +3844,7 @@ trim_trailing_whitespace = false
 
   > **try it!** 🍁
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 ### 26. 部署上线
 
@@ -3935,7 +3937,7 @@ trim_trailing_whitespace = false
 - **整篇文章，更像是列出一份清单，偏总结。若能一步一步实现我相信一定会有一些收获!**
 - **洋洋洒洒写了那么多...**
 
-**[⬆ back to top](#)**
+**[⬆ back to top](##目录)**
 
 ## 参阅
 
