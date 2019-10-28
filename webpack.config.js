@@ -8,12 +8,12 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const SafePostCssParser = require('postcss-safe-parser');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const IS_PROD = process.env.NODE_ENV === 'production';
 const IS_MOCK = process.env.MOCK === 'true';
 const filterProxy = require('./config/proxy');
 
-module.exports = function() {
+module.exports = function () {
   const baseConfig = {
     mode: IS_PROD ? 'production' : 'development',
 
@@ -183,12 +183,12 @@ module.exports = function() {
         template: path.resolve(__dirname, 'public/index.html'),
         minify: IS_PROD
           ? {
-              removeComments: true,
-              collapseWhitespace: true,
-              removeAttributeQuotes: true,
-              collapseBooleanAttributes: true,
-              removeScriptTypeAttributes: true,
-            }
+            removeComments: true,
+            collapseWhitespace: true,
+            removeAttributeQuotes: true,
+            collapseBooleanAttributes: true,
+            removeScriptTypeAttributes: true,
+          }
           : {},
       }),
       new MiniCssExtractPlugin({
@@ -278,9 +278,9 @@ module.exports = function() {
         chunks: 'all',
       },
     };
-    baseConfig.plugins.push(
-      new BundleAnalyzerPlugin()
-    );
+    // baseConfig.plugins.push(
+    //   new BundleAnalyzerPlugin()
+    // );
   }
 
   if (!IS_PROD) {
