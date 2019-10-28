@@ -11,13 +11,13 @@ const IS_PROD = process.env.NODE_ENV === 'production';
 const IS_MOCK = process.env.MOCK === 'true';
 const filterProxy = require('./config/proxy');
 
-module.exports = function() {
+module.exports = function () {
   const baseConfig = {
     mode: IS_PROD ? 'production' : 'development',
 
     devtool: IS_PROD ? false : 'inline-source-map',
 
-    entry: './src/index.js',
+    entry: './src/index.tsx',
 
     output: {
       path: path.resolve(__dirname, 'dist'),
@@ -33,6 +33,7 @@ module.exports = function() {
         assets: path.resolve(__dirname, 'src/assets'),
         style: path.resolve(__dirname, 'src/style'),
       },
+      extensions: [".ts", ".tsx", ".js", ".json"]
     },
 
     // externals: {
@@ -42,6 +43,15 @@ module.exports = function() {
 
     module: {
       rules: [
+        {
+          test: /\.tsx?$/,
+          loader: "awesome-typescript-loader"
+        },
+        {
+          enforce: "pre",
+          test: /\.js$/,
+          loader: "source-map-loader"
+        },
         {
           test: /\.(js|jsx)$/,
           exclude: /node_modules/,
@@ -181,12 +191,12 @@ module.exports = function() {
         template: path.resolve(__dirname, 'public/index.html'),
         minify: IS_PROD
           ? {
-              removeComments: true,
-              collapseWhitespace: true,
-              removeAttributeQuotes: true,
-              collapseBooleanAttributes: true,
-              removeScriptTypeAttributes: true,
-            }
+            removeComments: true,
+            collapseWhitespace: true,
+            removeAttributeQuotes: true,
+            collapseBooleanAttributes: true,
+            removeScriptTypeAttributes: true,
+          }
           : {},
       }),
       new MiniCssExtractPlugin({
