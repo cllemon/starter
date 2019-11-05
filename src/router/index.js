@@ -29,7 +29,7 @@ function RouterView(route) {
 
 export default function Router() {
   return (
-    <HashRouter basename={process.env.PUBLIC_PATH}>
+    <HashRouter>
       <Switch>
         {routes.map(route => (
           <RouterView key={route.path} {...route} />
