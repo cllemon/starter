@@ -37,10 +37,11 @@ module.exports = function () {
       },
     },
 
-    // externals: {
-    //   react: 'React',
-    //   'react-dom': 'ReactDOM'
-    // },
+    externals: {
+      // react: 'React',
+      // 'react-dom': 'ReactDOM',
+      // axios: 'axios'
+    },
 
     module: {
       rules: [
@@ -202,7 +203,7 @@ module.exports = function () {
         'process.env': {
           NODE_ENV: JSON.stringify(process.env.NODE_ENV),
           BASE_URL: IS_MOCK ? '"/"' : '"https://api.github.com/"',
-          PUBLIC_PATH: IS_PROD ? JSON.stringify(`/${name}`) : '"/"',
+          PUBLIC_PATH: IS_PROD ? JSON.stringify(`/${name}/`) : '"/"',
         },
       }),
     ],

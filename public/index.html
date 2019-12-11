@@ -1,30 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="./favicon.ico" />
-    <meta
-      name="viewport"
-      content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
-    />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="This is a react application built from scratch with JavaScript, away from the cli tool."
-    />
-    <title><%= htmlWebpackPlugin.options.title %></title>
-  </head>
 
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!-- <script
-      crossorigin
-      src="https://unpkg.com/react@16.10.2/umd/react.production.min.js"
-    ></script>
-    <script
-      crossorigin
-      src="https://unpkg.com/@hot-loader/react-dom@16.10.2/umd/react-dom.production.min.js"
-    ></script> -->
-  </body>
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="./favicon.ico" />
+  <meta name="viewport"
+    content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description"
+    content="This is a react application built from scratch with JavaScript, away from the cli tool." />
+  <title><%= htmlWebpackPlugin.options.title %></title>
+</head>
+
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+  <!-- <script type="text/javascript"
+    src="<%= process.env.PUBLIC_PATH %>libs/axios/0.19.0/axios<%= process.env.NODE_ENV === 'development' ? '' : '.min' %>.js"></script> -->
+</body>
+
 </html>
